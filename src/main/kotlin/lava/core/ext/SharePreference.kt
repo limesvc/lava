@@ -4,7 +4,7 @@ import android.content.SharedPreferences
 import lava.core.obj.toJson
 
 /**
- * Created by wuxi on 2020/12/30
+ * Created by svc on 2020/12/30
  */
 fun SharedPreferences.applyValue(key: String, value: Any) {
     edit().also {
