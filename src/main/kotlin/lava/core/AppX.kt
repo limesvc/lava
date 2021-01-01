@@ -8,7 +8,7 @@ import androidx.multidex.MultiDexApplication
  */
 lateinit var appContext: Context
 
-class AppExt: MultiDexApplication() {
+class AppX : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
         appContext = this

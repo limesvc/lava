@@ -1,0 +1,8 @@
+ext.deps += [
+        lifecycle: [
+                // https://mvnrepository.com/artifact/androidx.lifecycle/lifecycle-runtime
+                annotation: 'androidx.annotation:annotation:1.2.0-alpha01',
+                runtime   : 'androidx.lifecycle:lifecycle-runtime:2.3.0-rc01',
+                livedata  : 'androidx.lifecycle:lifecycle-livedata:2.3.0-rc01',
+        ]
+]
