@@ -1,2 +1,3 @@
-apply from: "gradle/init.gradle"
-apply from: "gradle/lifecycle.gradle"
+apply from: "lava/gradle/init.gradle"
+apply from: "lava/gradle/lifecycle.gradle"
+apply from: "lava/gradle/androidx.gradle"

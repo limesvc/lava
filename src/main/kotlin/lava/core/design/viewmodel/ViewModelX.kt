@@ -4,4 +4,6 @@ import androidx.lifecycle.ViewModel
 
 abstract class ViewModelX : ViewModel() {
     fun onStart() {}
+
+    fun bind(flag: Int) {}
 }

@@ -1,2 +1,2 @@
 ext.deps = []
-ext.plugin = []
+ext.plugins = []

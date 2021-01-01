@@ -57,11 +57,6 @@ class NestedVerticalScrollableHost : FrameLayout {
         touchSlop = ViewConfiguration.get(context).scaledTouchSlop
     }
 
-    private fun canChildScroll(orientation: Int, delta: Float): Boolean {
-        val direction = -delta.sign.toInt()
-        return child?.canScrollVertically(direction) ?: false
-    }
-
     override fun onInterceptTouchEvent(e: MotionEvent): Boolean {
         handleInterceptTouchEvent(e)
         return super.onInterceptTouchEvent(e)
@@ -70,7 +65,6 @@ class NestedVerticalScrollableHost : FrameLayout {
     private var isYMode: Boolean? = null
 
     private fun handleInterceptTouchEvent(e: MotionEvent) {
-        val orientation = parentViewPager?.orientation ?: return
 //
 //        // Early return if child can't scroll in same direction as parent
 //        if (!canChildScroll(orientation, -1f) && !canChildScroll(orientation, 1f)) {
@@ -87,7 +81,7 @@ class NestedVerticalScrollableHost : FrameLayout {
 
             val dx = e.x - initialX
             val dy = e.y - initialY
-            val isVpHorizontal = orientation == ORIENTATION_HORIZONTAL
+//            val isVpHorizontal = orientation == ORIENTATION_HORIZONTAL
 
             // assuming ViewPager2 touch-slop is 2x touch-slop of child
             val scaledDx = dx.absoluteValue
