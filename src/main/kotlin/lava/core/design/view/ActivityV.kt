@@ -2,22 +2,34 @@ package lava.core.design.view
 
 import android.os.Bundle
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.ViewModelProvider
+import lava.core.bus.Bus
 import lava.core.design.viewmodel.ViewModelX
+import lava.core.util.getGenericClass
 
 abstract class ActivityV<VM : ViewModelX> : ActivityX() {
-    lateinit var vm: VM
+    private val vmProvider
+        get() = ViewModelProvider(this, defaultViewModelProviderFactory)
 
-    abstract fun binding(): ViewDataBinding
+    protected lateinit var vm: VM
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        vm = vmProvider.get(getGenericClass(this::class.java) as Class<VM>)
+
         setContentView(binding().root)
         initView()
         initEvent()
+        vm.connect(this) { bindVM() }
         vm.onStart()
     }
 
-    protected fun initView() {}
+    abstract fun binding(): ViewDataBinding
 
-    protected fun initEvent() {}
+    protected open fun Bus.bindVM() {}
+
+    protected open fun initView() {}
+
+    protected open fun initEvent() {}
 }

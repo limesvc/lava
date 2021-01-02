@@ -11,7 +11,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -49,7 +49,10 @@ dependencies {
 
     implementation "com.google.code.gson:gson:2.8.6"
 
-    implementation deps.androidx.multidex
+    //"https://github.com/forgetman/logger"
+    api 'com.github.forgetman:logger:2.0.1'
+
+    api deps.androidx.multidex
 
     compileOnly deps.androidx.viewpager2
 
