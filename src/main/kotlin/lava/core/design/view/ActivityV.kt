@@ -18,8 +18,9 @@ abstract class ActivityV<VM : ViewModelX> : ActivityX() {
 
         vm = vmProvider.get(getGenericClass(this::class.java) as Class<VM>)
 
-        setContentView(binding().root)
-        initView()
+        val binding = binding()
+        setContentView(binding.root)
+        initView(binding)
         initEvent()
         vm.connect(this) { bindVM() }
         vm.onStart()
@@ -29,7 +30,7 @@ abstract class ActivityV<VM : ViewModelX> : ActivityX() {
 
     protected open fun Bus.bindVM() {}
 
-    protected open fun initView() {}
+    protected open fun <T> initView(t: T) {}
 
     protected open fun initEvent() {}
 }

@@ -57,12 +57,13 @@ class Bus(private val owner: LifecycleOwner, private val live: MutableLiveData<E
     /**
      * 除非确定要做一个可变类型参数，否则不要使用这个方法
      */
-    fun onAny(flag: Int, func: Function1<Any?, Unit>) {
+    fun onAny(flag: Int, func: Function1<Any?, Unit>): Bus {
         live.observe(owner, Observer {
             if (it.flag == flag) {
                 func(it.any)
             }
         })
+        return this
     }
 }
 

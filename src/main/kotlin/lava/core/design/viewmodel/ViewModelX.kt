@@ -16,5 +16,5 @@ abstract class ViewModelX : ViewModel() {
 
     fun sendUI(flag: Int, any: Any? = 0) = bus.send(flag, any)
 
-    fun onStart() {}
+    open fun onStart() {}
 }
