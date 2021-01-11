@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
 import lava.core.bus.Bus
+import lava.core.bus.LiveBus
 import lava.core.design.viewmodel.ViewModelX
 import lava.core.util.getGenericClass
 
@@ -22,13 +23,17 @@ abstract class ActivityV<VM : ViewModelX> : ActivityX() {
         setContentView(binding.root)
         initView(binding)
         initEvent()
-        vm.connect(this) { bindVM() }
+        vm.connect { bindVM() }
         vm.onStart()
     }
 
     abstract fun binding(): ViewDataBinding
 
-    protected open fun Bus.bindVM() {}
+    protected open fun LiveBus.bindVM() {
+        with(this@ActivityV).linkVMLive()
+    }
+
+    protected open fun Bus.linkVMLive() {}
 
     protected open fun <T> initView(t: T) {}
 
