@@ -3,6 +3,8 @@ package lava.core.safe
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import lava.core.appContext
+import lava.core.util.AppUtil
 
 /**
  * Created by svc on 2021/01/09
@@ -16,24 +18,54 @@ class BitmapCreator {
             return options
         }
 
-        fun create(src: Bitmap): Bitmap? {
-            var ss: Boolean? = false
+        fun fixSampleSizeByMem(options: BitmapFactory.Options): BitmapFactory.Options {
+            val outWidth = options.outWidth
+            val outHeight = options.outHeight
+            val area = outWidth * outHeight
+            val avail = AppUtil.getAvailMem(appContext) / 4
+            var sampleSize = 1
 
+            while (area / sampleSize >= avail) {
+                sampleSize *= 2
+            }
+            options.inSampleSize = sampleSize
+            return options
+        }
+
+        fun create(src: Bitmap): Bitmap? {
             return kotlin.runCatching {
-                Bitmap.createBitmap(src, 0, 0, src.width, src.height)
+                if (available(src.width, src.height)) {
+                    Bitmap.createBitmap(src, 0, 0, src.width, src.height)
+                } else null
             }.getOrNull()
         }
 
         fun create(source: Bitmap, x: Int, y: Int, width: Int, height: Int, matrix: Matrix, filter: Boolean): Bitmap? {
             return kotlin.runCatching {
-                Bitmap.createBitmap(source, x, y, width, height, matrix, filter)
+                if (available(width, height)) {
+                    Bitmap.createBitmap(source, x, y, width, height, matrix, filter)
+                } else null
             }.getOrNull()
         }
 
         fun create(source: Bitmap, x: Int, y: Int, width: Int, height: Int): Bitmap? {
             return kotlin.runCatching {
-                Bitmap.createBitmap(source, x, y, width, height)
+                if (available(width, height)) {
+                    Bitmap.createBitmap(source, x, y, width, height)
+                } else null
             }.getOrNull()
+        }
+
+        /**
+         * ARGB_8888 4 byte
+         * ARGB_4444 2 byte
+         * RGB_565   2 byte
+         * ALPHA_*   1 byte
+         */
+        private fun available(width: Int, height: Int, byteRate: Int = 4): Boolean {
+            val needMem = width * height * byteRate
+            val available = AppUtil.getAvailMem(appContext)
+            return needMem < available
         }
     }
 }
