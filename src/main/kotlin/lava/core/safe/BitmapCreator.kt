@@ -1,6 +1,7 @@
 package lava.core.safe
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Matrix
 
 /**
@@ -8,6 +9,13 @@ import android.graphics.Matrix
  */
 class BitmapCreator {
     companion object {
+        fun getSize(path: String): BitmapFactory.Options {
+            val options = BitmapFactory.Options()
+            options.inJustDecodeBounds = true
+            BitmapFactory.decodeFile(path, options)
+            return options
+        }
+
         fun create(src: Bitmap): Bitmap? {
             var ss: Boolean? = false
 
