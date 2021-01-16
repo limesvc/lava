@@ -20,9 +20,9 @@ import android.view.MotionEvent;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.example.lava.R;
-
 import java.io.IOException;
+
+import lava.core.R;
 
 
 /**

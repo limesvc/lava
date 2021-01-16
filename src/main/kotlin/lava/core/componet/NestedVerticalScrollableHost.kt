@@ -23,9 +23,7 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.widget.FrameLayout
 import androidx.viewpager2.widget.ViewPager2
-import androidx.viewpager2.widget.ViewPager2.ORIENTATION_HORIZONTAL
 import kotlin.math.absoluteValue
-import kotlin.math.sign
 
 /**
  * Layout to wrap a scrollable component inside a ViewPager2. Provided as a solution to the problem

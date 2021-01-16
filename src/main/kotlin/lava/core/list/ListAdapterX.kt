@@ -1,6 +1,5 @@
 package lava.core.list
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView

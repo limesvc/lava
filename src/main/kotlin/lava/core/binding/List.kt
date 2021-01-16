@@ -26,6 +26,7 @@ fun <T, V : ListAdapterX<T, *>> bindList(
     layoutManager?.also { recyclerView.layoutManager = it }
     if (recyclerView.adapter == null && adapter != null) recyclerView.adapter = adapter
 
+    @Suppress("UNCHECKED_CAST")
     val curAdapter = (recyclerView.adapter ?: adapter) as? ListAdapterX<T, *>
     curAdapter?.setData(data?.value)
 

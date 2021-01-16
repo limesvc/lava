@@ -12,12 +12,14 @@ abstract class ActivityV<VM : ViewModelX> : ActivityX() {
     private val vmProvider
         get() = ViewModelProvider(this, defaultViewModelProviderFactory)
 
+    @Suppress
     protected lateinit var vm: VM
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        vm = vmProvider.get(getGenericClass(this::class.java) as Class<VM>)
+        @Suppress("UNCHECKED_CAST")
+        vmProvider.get(getGenericClass(this::class.java) as Class<VM>).also { vm = it }
 
         val binding = binding()
         setContentView(binding.root)
