@@ -1,3 +1,5 @@
+@file:Suppress(UNUSED)
+
 package lava.core.obj
 
 /**
@@ -28,6 +30,8 @@ const val USELESS_IS_CHECK = "USELESS_IS_CHECK" // 没有用的实例类型检�
 const val VARIABLE_WITH_REDUNDANT_INITIALIZER = "VARIABLE_WITH_REDUNDANT_INITIALIZER" // 变量初始化多余
 
 const val DEPRECATION = "DEPRECATION" // 方法弃用
+
+const val UNUSED = "UNUSED" // 任何未使用
 
 const val UNUSED_PARAMETER = "UNUSED_PARAMETER" // 参数没有使用
 
