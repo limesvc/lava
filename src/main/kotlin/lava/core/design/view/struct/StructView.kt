@@ -1,5 +1,8 @@
 package lava.core.design.view.struct
 
+import android.view.View
+import androidx.databinding.ViewDataBinding
+
 /**
  * 模块化拼凑基类功能
  * 通过扩展方法提供封装调用
@@ -13,10 +16,16 @@ interface StructView {
     operator fun plus(structView: StructView): StructView {
         return LinkStruct(structView, this)
     }
+
+    fun build(binding: () -> ViewDataBinding) {
+        this[DecorStruct]?.install(this, binding)
+    }
 }
 
 interface DecorStruct : StructView {
     companion object Key : Struct<DecorStruct>
+
+    fun install(struct: StructView, binding: () -> ViewDataBinding)
 }
 
 interface ErrorStruct : StructView {

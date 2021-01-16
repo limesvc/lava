@@ -21,15 +21,11 @@ abstract class ActivityV<VM : ViewModelX> : ActivityX() {
         @Suppress("UNCHECKED_CAST")
         vmProvider.get(getGenericClass(this::class.java) as Class<VM>).also { vm = it }
 
-        val binding = binding()
-        setContentView(binding.root)
-        initView(binding)
+        initView(viewBinding)
         initEvent()
         vm.connect { bindVM() }
         vm.onStart()
     }
-
-    abstract fun binding(): ViewDataBinding
 
     protected open fun LiveBus.bindVM() {
         with(this@ActivityV).linkVMLive()
