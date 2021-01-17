@@ -8,4 +8,8 @@ abstract class DecorStructX : DecorStruct {
         @Suppress(UNCHECKED_CAST)
         return if (DecorStruct == struct) this as T else null
     }
+
+    override fun install(struct: StructView, host: StructHost) {
+        host.onSetup(host.binding())
+    }
 }

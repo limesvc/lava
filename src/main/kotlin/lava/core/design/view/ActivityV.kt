@@ -1,6 +1,5 @@
 package lava.core.design.view
 
-import android.os.Bundle
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
 import lava.core.bus.Bus
@@ -15,14 +14,10 @@ abstract class ActivityV<VM : ViewModelX> : ActivityX() {
     @Suppress
     protected lateinit var vm: VM
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    override fun onSetup(binding: ViewDataBinding) {
+        super.onSetup(binding)
         @Suppress("UNCHECKED_CAST")
         vmProvider.get(getGenericClass(this::class.java) as Class<VM>).also { vm = it }
-
-        initView(viewBinding)
-        initEvent()
         vm.connect { bindVM() }
         vm.onStart()
     }
@@ -32,8 +27,4 @@ abstract class ActivityV<VM : ViewModelX> : ActivityX() {
     }
 
     protected open fun Bus.linkVMLive() {}
-
-    protected open fun <T> initView(t: T) {}
-
-    protected open fun initEvent() {}
 }

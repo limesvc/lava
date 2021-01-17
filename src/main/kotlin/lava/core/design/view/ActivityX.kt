@@ -5,11 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ViewDataBinding
+import lava.core.design.view.struct.CommonDecorView
+import lava.core.design.view.struct.StructHost
 import lava.core.design.view.struct.StructView
 import kotlin.reflect.KClass
 
-abstract class ActivityX : AppCompatActivity() {
-    protected lateinit var viewBinding: ViewDataBinding
+abstract class ActivityX : AppCompatActivity(), StructHost {
+    protected lateinit var binding: ViewDataBinding
 
     protected fun <T : Activity> startActivity(clazz: KClass<T>) {
         startActivity(Intent(this, clazz.java))
@@ -17,14 +19,20 @@ abstract class ActivityX : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-//        binding = binding()
-        val structView = getStructView()
-        structView.build(::binding)
-//        setContentView(binding.root)
+        getStructView().build(this)
     }
 
-    abstract fun binding(): ViewDataBinding
+    override fun onSetup(binding: ViewDataBinding) {
+        this.binding = binding
+        initView(binding)
+        initEvent()
+    }
 
-    abstract fun getStructView(): StructView
+    override fun getStructView(): StructView {
+        return CommonDecorView()
+    }
+
+    protected open fun <T> initView(t: T) {}
+
+    protected open fun initEvent() {}
 }

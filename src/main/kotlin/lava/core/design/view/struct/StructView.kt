@@ -10,6 +10,12 @@ import androidx.databinding.ViewDataBinding
  */
 interface Struct<T>
 
+interface StructHost {
+    fun getStructView(): StructView
+    fun binding(): ViewDataBinding
+    fun onSetup(binding: ViewDataBinding)
+}
+
 interface StructView {
     operator fun <T> get(struct: Struct<T>): T?
 
@@ -17,15 +23,15 @@ interface StructView {
         return LinkStruct(structView, this)
     }
 
-    fun build(binding: () -> ViewDataBinding) {
-        this[DecorStruct]?.install(this, binding)
+    fun build(host: StructHost) {
+        this[DecorStruct]?.install(this, host)
     }
 }
 
 interface DecorStruct : StructView {
     companion object Key : Struct<DecorStruct>
 
-    fun install(struct: StructView, binding: () -> ViewDataBinding)
+    fun install(struct: StructView, host: StructHost)
 }
 
 interface ErrorStruct : StructView {
