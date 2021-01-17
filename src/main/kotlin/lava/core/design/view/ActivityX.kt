@@ -24,6 +24,7 @@ abstract class ActivityX : AppCompatActivity(), StructHost {
 
     override fun onSetup(binding: ViewDataBinding) {
         this.binding = binding
+        setContentView(binding.root)
         initView(binding)
         initEvent()
     }
