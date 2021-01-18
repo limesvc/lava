@@ -60,4 +60,5 @@ dependencies {
 
     api deps.androidx.core
     api deps.androidx.appcompat
+    api deps.androidx.swiperefreshlayout
 }

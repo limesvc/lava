@@ -86,6 +86,16 @@ abstract class ListAdapterM<DATA> : RecyclerView.Adapter<ViewHolderM>() {
         mData[position] = data
         notifyItemChanged(position + headOffset)
     }
+
+    fun addHeader(view: View) {
+        headerList.add(view)
+        notifyItemInserted(headerList.size - 1)
+    }
+
+    fun addFooter(view: View) {
+        footerList.add(view)
+        notifyItemInserted(itemCount - 1)
+    }
 }
 
 class ViewHolderM(view: View) : RecyclerView.ViewHolder(view) {
