@@ -1,6 +1,5 @@
 package lava.core.design.view.struct
 
-import android.view.View
 import androidx.databinding.ViewDataBinding
 
 /**
