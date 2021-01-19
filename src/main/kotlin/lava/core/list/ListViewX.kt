@@ -11,42 +11,19 @@ class ListViewX(context: Context, attrs: AttributeSet?) : SwipeRefreshLayout(con
     @Suppress
     private val recyclerView: RecyclerView = RecyclerView(context)
 
-    private var loadMore = false
-    private var addLoadMoreFooter = false
-    private var footer: LoadingFooter? = null
+    private var footer: LoadingFooterX? = null
 
     init {
         addView(recyclerView, LPUtil.viewGroup())
     }
 
     fun setAdapter(adapter: ListAdapterM<*>) {
-        addLoadMoreFooter = recyclerView.adapter == adapter
         recyclerView.adapter = adapter
-
-        if (loadMore && !addLoadMoreFooter) {
-            adapter.addFooter(ensureFooter().asView())
-        }
+        footer?.attachX(recyclerView)
     }
 
-    fun initLoadMore(footer: LoadingFooter? = null) {
-        loadMore = true
+    fun initLoadMore(footer: LoadingFooterX? = null) {
         this.footer = footer
-        recyclerView.adapter.am<ListAdapterM<*>> {
-            it.addFooter(ensureFooter().asView())
-            addLoadMoreFooter = true
-        }
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-
-                }
-            }
-        })
-    }
-
-    private fun ensureFooter(): LoadingFooter {
-        val ensure = footer ?: LoadingFooterM(context)
-        footer = ensure
-        return ensure
+        footer?.attachX(recyclerView)
     }
 }

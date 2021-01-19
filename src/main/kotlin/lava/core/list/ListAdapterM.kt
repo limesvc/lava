@@ -1,6 +1,5 @@
 package lava.core.list
 
-import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
@@ -89,8 +88,10 @@ abstract class ListAdapterM<DATA> : RecyclerView.Adapter<ViewHolderM>() {
     }
 
     fun addHeader(view: View) {
-        headerList.add(view)
-        notifyItemInserted(headerList.size - 1)
+        if (!headerList.contains(view)) {
+            headerList.add(view)
+            notifyItemInserted(headerList.size - 1)
+        }
     }
 
     fun removeHeader(view: View) {
@@ -102,8 +103,10 @@ abstract class ListAdapterM<DATA> : RecyclerView.Adapter<ViewHolderM>() {
     }
 
     fun addFooter(view: View) {
-        footerList.add(view)
-        notifyItemInserted(itemCount - 1)
+        if (!footerList.contains(view)) {
+            footerList.add(view)
+            notifyItemInserted(itemCount - 1)
+        }
     }
 
     fun removeFooter(view: View) {
