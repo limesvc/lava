@@ -2,8 +2,6 @@ package lava.core.list
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import lava.core.ext.am
