@@ -36,6 +36,14 @@ abstract class LiveBus {
 class Bus(private val owner: LifecycleOwner, private val live: MutableLiveData<Event>) :
     MutableLiveData<Event>() {
 
+    inline fun <reified T> on(flag: Flag<T>, crossinline func: Function1<T, Unit>){
+        onAny(flag.flag) { any ->
+            any.am<T> {
+                func(it)
+            }
+        }
+    }
+
     inline fun <reified T : Any> on(flag: Int, crossinline func: Function1<T, Unit>): Bus {
         onAny(flag) { any ->
             any.am<T> {

@@ -27,7 +27,7 @@ abstract class ActivityV<VM : ViewModelX> : ActivityX() {
         vm.onStart()
     }
 
-    protected open fun LiveBus.bindVM() {
+    protected fun LiveBus.bindVM() {
         with(this@ActivityV).linkVMLive()
     }
 
