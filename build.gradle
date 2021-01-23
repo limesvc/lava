@@ -57,6 +57,7 @@ dependencies {
     api deps.lifecycle.runtime
     api deps.lifecycle.extensions
     api deps.lifecycle.livedata
+    api deps.lifecycle.viewmodel
 
     api deps.androidx.core
     api deps.androidx.appcompat

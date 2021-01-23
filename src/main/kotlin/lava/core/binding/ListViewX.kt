@@ -7,6 +7,7 @@ import lava.core.list.ListAdapterX
 import lava.core.list.ListViewX
 import lava.core.list.LoadingFooter
 import lava.core.list.LoadingFooterM
+import lava.core.list.page.LivePagerX
 import lava.core.live.LiveList
 
 const val PREFIX_LIST = "android:list_"
@@ -18,6 +19,7 @@ const val LIST_DECORATION = PREFIX_LIST.plus("decoration")
 const val LIST_FOOTER = PREFIX_LIST.plus("footer")
 const val LIST_LOAD_MORE = PREFIX_LIST.plus("load_more")
 const val LIST_REFRESH = PREFIX_LIST.plus("refresh")
+const val LIST_PAGER = PREFIX_LIST.plus("pager")
 
 @BindingAdapter(
     value = [LIST_DATA,
@@ -26,25 +28,27 @@ const val LIST_REFRESH = PREFIX_LIST.plus("refresh")
         LIST_DECORATION,
         LIST_FOOTER,
         LIST_LOAD_MORE,
-        LIST_REFRESH],
+        LIST_REFRESH,
+        LIST_PAGER],
     requireAll = false
 )
 fun <T, V : ListAdapterX<T, *>> bindListView(
     listView: ListViewX,
-    data: LiveList<T>?,
+    data: List<T>?,
     adapter: V?,
     layoutManager: RecyclerView.LayoutManager?,
     decoration: RecyclerView.ItemDecoration?,
     footer: LoadingFooter?,
     loadMore: VoidBlock?,
-    refresh: SwipeRefreshLayout.OnRefreshListener?
+    refresh: SwipeRefreshLayout.OnRefreshListener?,
+    pager: LivePagerX<*, T>?
 ) {
     layoutManager?.also { listView.setLayoutManager(it) }
     if (listView.adapter != adapter && adapter != null) listView.adapter = adapter
 
     @Suppress("UNCHECKED_CAST")
     val curAdapter = (listView.adapter ?: adapter) as? ListAdapterX<T, *>
-    curAdapter?.setData(data?.value)
+    curAdapter?.setData(data)
 
     if (decoration != null) listView.addItemDecoration(decoration)
 
@@ -52,6 +56,16 @@ fun <T, V : ListAdapterX<T, *>> bindListView(
         val plugin = footer ?: LoadingFooterM(listView.context)
         plugin.onLoad(loadMore::invoke)
         listView.initLoadMore(footer)
+    }
+
+    pager?.also {
+        val plugin = footer ?: LoadingFooterM(listView.context)
+        pager.attach(plugin)
+        listView.initLoadMore(footer)
+        listView.setOnRefreshListener(it::refresh)
+        pager.observeOnce {
+            curAdapter?.setData(it)
+        }
     }
 
     refresh?.also { listView.setOnRefreshListener(it) }

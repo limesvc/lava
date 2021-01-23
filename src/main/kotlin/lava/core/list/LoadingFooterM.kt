@@ -24,8 +24,8 @@ class LoadingFooterM @JvmOverloads constructor(
         textView.setTextColor(Color.BLACK)
 
         setOnClickListener {
-            if (state == LoadMoreState.ERROR) {
-                updateState(LoadMoreState.LOADING)
+            if (state == LoadingState.ERROR) {
+                updateState(LoadingState.LOADING)
             }
         }
     }

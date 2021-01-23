@@ -26,3 +26,13 @@ fun interval(millis: Long, block: Block): Job {
         }
     }
 }
+
+fun CoroutineScope.launchIO(
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend CoroutineScope.() -> Unit
+) = launch(Dispatchers.IO, start, block)
+
+fun CoroutineScope.launchMain(
+    start: CoroutineStart = CoroutineStart.DEFAULT,
+    block: suspend CoroutineScope.() -> Unit
+) = launch(Dispatchers.Main, start, block)

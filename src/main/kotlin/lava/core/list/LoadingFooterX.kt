@@ -12,7 +12,7 @@ abstract class LoadingFooterX @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr), LoadingFooter {
     private var scrollListener: RecyclerView.OnScrollListener? = null
 
-    protected var state = LoadMoreState.READY
+    protected var state = LoadingState.READY
 
     private var loadMoreLsn: Block? = null
 
@@ -28,10 +28,10 @@ abstract class LoadingFooterX @JvmOverloads constructor(
         val scrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE
-                    && state == LoadMoreState.READY
+                    && state == LoadingState.READY
                     && loadMoreLsn != null
                 ) {
-                    updateState(LoadMoreState.LOADING)
+                    updateState(LoadingState.LOADING)
                 }
             }
         }
@@ -40,7 +40,7 @@ abstract class LoadingFooterX @JvmOverloads constructor(
     }
 
     protected open fun detach() {
-        state = LoadMoreState.READY
+        state = LoadingState.READY
         scrollListener?.also {
             recyclerView?.removeOnScrollListener(it)
         }
@@ -51,13 +51,13 @@ abstract class LoadingFooterX @JvmOverloads constructor(
         loadMoreLsn = null
     }
 
-    fun updateState(state: LoadMoreState) {
+    override fun updateState(state: LoadingState) {
         this.state = state
         when (state) {
-            LoadMoreState.READY -> onReady()
-            LoadMoreState.ERROR -> onError()
-            LoadMoreState.DONE -> onDone()
-            LoadMoreState.LOADING -> onLoading()
+            LoadingState.READY -> onReady()
+            LoadingState.ERROR -> onError()
+            LoadingState.DONE -> onDone()
+            LoadingState.LOADING -> onLoading()
         }
     }
 

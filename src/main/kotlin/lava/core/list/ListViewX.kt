@@ -8,7 +8,7 @@ import lava.core.util.LPUtil
 
 class ListViewX(context: Context, attrs: AttributeSet?) : SwipeRefreshLayout(context, attrs) {
     @Suppress
-    private val recyclerView: RecyclerView = RecyclerView(context)
+    val recyclerView: RecyclerView = RecyclerView(context)
 
     private var footer: LoadingFooter? = null
 
