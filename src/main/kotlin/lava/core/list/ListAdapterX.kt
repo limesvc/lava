@@ -5,7 +5,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 
 abstract class ListAdapterX<DATA, BINDING : ViewDataBinding> :
-    RecyclerView.Adapter<ViewHolderX<BINDING>>() {
+    ListAdapter<DATA, ViewHolderX<BINDING>>() {
     private val mData = mutableListOf<DATA>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderX<BINDING> {
@@ -22,16 +22,6 @@ abstract class ListAdapterX<DATA, BINDING : ViewDataBinding> :
     abstract fun binding(viewType: Int, parent: ViewGroup): BINDING
 
     abstract fun onBindView(position: Int, data: DATA, binding: BINDING)
-
-    fun getItem(position: Int) = mData[position]
-
-    fun setData(data: List<DATA>?) {
-        mData.clear()
-        if (data != null) {
-            mData.addAll(data)
-        }
-        notifyDataSetChanged()
-    }
 
     fun replaceAll(data: List<DATA>) {
         mData.clear()

@@ -20,21 +20,10 @@ abstract class LoadingFooterX @JvmOverloads constructor(
 
     override fun asView() = this
 
-    fun attachX(recyclerView: RecyclerView) {
+    override fun attach(recyclerView: RecyclerView) {
         recyclerView.adapter.am<ListAdapterM<*>> {
             it.addFooter(this)
         }
-        attach(recyclerView)
-    }
-
-    private fun detachX() {
-        recyclerView?.adapter.am<ListAdapterM<*>> {
-            it.removeFooter(this)
-        }
-        detach()
-    }
-
-    override fun attach(recyclerView: RecyclerView) {
         this.recyclerView = recyclerView
         val scrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -50,10 +39,13 @@ abstract class LoadingFooterX @JvmOverloads constructor(
         recyclerView.addOnScrollListener(scrollListener)
     }
 
-    fun detach() {
+    protected open fun detach() {
         state = LoadMoreState.READY
         scrollListener?.also {
             recyclerView?.removeOnScrollListener(it)
+        }
+        recyclerView?.adapter.am<ListAdapterM<*>> {
+            it.removeFooter(this)
         }
         recyclerView = null
         loadMoreLsn = null
@@ -69,7 +61,7 @@ abstract class LoadingFooterX @JvmOverloads constructor(
         }
     }
 
-    fun onLoad(block: Block) {
+    override fun onLoad(block: Block) {
         loadMoreLsn = block
     }
 
@@ -82,6 +74,6 @@ abstract class LoadingFooterX @JvmOverloads constructor(
     protected open fun onError() {}
 
     protected open fun onDone() {
-        detachX()
+        detach()
     }
 }

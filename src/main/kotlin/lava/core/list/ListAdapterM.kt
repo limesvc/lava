@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 
-abstract class ListAdapterM<DATA> : RecyclerView.Adapter<ViewHolderM>() {
+abstract class ListAdapterM<DATA> : ListAdapter<DATA, ViewHolderM>() {
     private val mData = mutableListOf<DATA>()
 
     private val headerList = mutableListOf<View>()
@@ -56,36 +56,7 @@ abstract class ListAdapterM<DATA> : RecyclerView.Adapter<ViewHolderM>() {
 
     abstract fun onBindView(bindingType: Int, data: DATA, binding: ViewDataBinding)
 
-    fun getItem(position: Int) = mData[position - headOffset]
-
-    fun setData(data: List<DATA>?) {
-        mData.clear()
-        if (data != null) {
-            mData.addAll(data)
-        }
-        notifyDataSetChanged()
-    }
-
-    fun replaceAll(data: List<DATA>) {
-        mData.clear()
-        mData.addAll(data)
-        notifyDataSetChanged()
-    }
-
-    fun removeAt(position: Int) {
-        mData.removeAt(position)
-        notifyItemRemoved(position + headOffset)
-    }
-
-    fun insert(data: DATA, position: Int) {
-        mData.add(position, data)
-        notifyItemInserted(position + headOffset)
-    }
-
-    fun refresh(data: DATA, position: Int) {
-        mData[position] = data
-        notifyItemChanged(position + headOffset)
-    }
+    override fun getItem(position: Int) = mData[position - headOffset]
 
     fun addHeader(view: View) {
         if (!headerList.contains(view)) {

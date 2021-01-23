@@ -1,3 +1,3 @@
 package lava.core.type
 
-typealias Block = (() -> Unit)
+typealias Block = () -> Unit

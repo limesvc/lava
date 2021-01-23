@@ -12,8 +12,7 @@ abstract class ActivityV<VM : ViewModelX> : ActivityX() {
     private val vmProvider
         get() = ViewModelProvider(this, defaultViewModelProviderFactory)
 
-    @Suppress
-    protected lateinit var vm: VM
+    lateinit var vm: VM
 
     override fun onCreate(savedInstanceState: Bundle?) {
         @Suppress("UNCHECKED_CAST")

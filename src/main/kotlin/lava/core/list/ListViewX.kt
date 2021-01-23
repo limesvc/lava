@@ -4,26 +4,35 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import lava.core.ext.am
 import lava.core.util.LPUtil
 
 class ListViewX(context: Context, attrs: AttributeSet?) : SwipeRefreshLayout(context, attrs) {
     @Suppress
     private val recyclerView: RecyclerView = RecyclerView(context)
 
-    private var footer: LoadingFooterX? = null
+    private var footer: LoadingFooter? = null
 
     init {
         addView(recyclerView, LPUtil.viewGroup())
     }
 
-    fun setAdapter(adapter: ListAdapterM<*>) {
-        recyclerView.adapter = adapter
-        footer?.attachX(recyclerView)
+    var adapter: RecyclerView.Adapter<*>?
+        get() = recyclerView.adapter
+        set(value) {
+            recyclerView.adapter = value
+            footer?.attach(recyclerView)
+        }
+
+    fun addItemDecoration(decor: RecyclerView.ItemDecoration) {
+        recyclerView.addItemDecoration(decor, -1)
     }
 
-    fun initLoadMore(footer: LoadingFooterX? = null) {
+    fun initLoadMore(footer: LoadingFooter? = null) {
         this.footer = footer
-        footer?.attachX(recyclerView)
+        footer?.attach(recyclerView)
+    }
+
+    fun setLayoutManager(layoutManager: RecyclerView.LayoutManager) {
+        recyclerView.layoutManager = layoutManager
     }
 }
