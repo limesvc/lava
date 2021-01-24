@@ -48,7 +48,9 @@ fun <T, V : ListAdapterX<T, *>> bindListView(
 
     @Suppress("UNCHECKED_CAST")
     val curAdapter = (listView.adapter ?: adapter) as? ListAdapterX<T, *>
-    curAdapter?.setData(data)
+    if (data != null) {
+        curAdapter?.setData(data)
+    }
 
     if (decoration != null) listView.addItemDecoration(decoration)
 

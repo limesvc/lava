@@ -1,17 +1,20 @@
 package lava.core.list
 
 import androidx.recyclerview.widget.RecyclerView
+import java.util.*
 
 abstract class ListAdapter<DATA, VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
-    private val mData = mutableListOf<DATA>()
+    protected val mData = LinkedList<DATA>()
 
     open fun setData(data: List<DATA>?) {
         mData.clear()
         if (data != null) {
-            mData.addAll(data)
+            val success = mData.addAll(data)
         }
         notifyDataSetChanged()
     }
 
     open fun getItem(position: Int) = mData[position]
+
+    override fun getItemCount() = mData.size
 }

@@ -10,8 +10,8 @@ import lava.core.list.LoadingFooter
 import lava.core.list.LoadingState
 import logger.L
 
-typealias DataBuilder = (page: Int, size: Int) -> Any
-typealias SuspendDataBuilder = suspend (page: Int, size: Int) -> Any
+typealias DataBuilder = (page: Int, size: Int) -> Any?
+typealias SuspendDataBuilder = suspend (page: Int, size: Int) -> Any?
 
 typealias LiveObserve<IN> = (IN) -> Unit
 

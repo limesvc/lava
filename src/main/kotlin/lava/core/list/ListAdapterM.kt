@@ -6,8 +6,6 @@ import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 
 abstract class ListAdapterM<DATA> : ListAdapter<DATA, ViewHolderM>() {
-    private val mData = mutableListOf<DATA>()
-
     private val headerList = mutableListOf<View>()
     private val footerList = mutableListOf<View>()
 

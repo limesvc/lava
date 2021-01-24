@@ -34,7 +34,7 @@ abstract class ActivityX : AppCompatActivity(), StructHost {
         return CommonDecorView()
     }
 
-    protected open fun <T> initView(t: T) {}
+    protected open fun initView(binding: ViewDataBinding) {}
 
     protected open fun initEvent() {}
 }

@@ -6,14 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 
 abstract class ListAdapterX<DATA, BINDING : ViewDataBinding> :
     ListAdapter<DATA, ViewHolderX<BINDING>>() {
-    private val mData = mutableListOf<DATA>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderX<BINDING> {
         val binding = binding(viewType, parent)
         return ViewHolderX(binding)
     }
-
-    override fun getItemCount() = mData.size
 
     override fun onBindViewHolder(holder: ViewHolderX<BINDING>, position: Int) {
         onBindView(position, getItem(position), holder.binding)

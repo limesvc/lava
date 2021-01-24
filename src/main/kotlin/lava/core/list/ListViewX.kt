@@ -1,6 +1,7 @@
 package lava.core.list
 
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
