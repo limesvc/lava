@@ -41,7 +41,7 @@ fun <T, V : ListAdapterX<T, *>> bindListView(
     footer: LoadingFooter?,
     loadMore: VoidBlock?,
     refresh: SwipeRefreshLayout.OnRefreshListener?,
-    pager: LivePagerX<*, T>?
+    pager: LivePagerX<T>?
 ) {
     layoutManager?.also { listView.setLayoutManager(it) }
     if (listView.adapter != adapter && adapter != null) listView.adapter = adapter

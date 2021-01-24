@@ -10,26 +10,32 @@ import lava.core.list.LoadingFooter
 import lava.core.list.LoadingState
 import logger.L
 
-typealias DataBuilder<IN> = (page: Int, size: Int) -> IN
-typealias SuspendDataBuilder<IN> = suspend (page: Int, size: Int) -> IN
+typealias DataBuilder = (page: Int, size: Int) -> Any
+typealias SuspendDataBuilder = suspend (page: Int, size: Int) -> Any
 
 typealias LiveObserve<IN> = (IN) -> Unit
 
-abstract class LivePagerX<IN, DATA>(private var page: Int = 1, private var size: Int = 20) :
+abstract class LivePagerX<DATA>(owner: LifecycleOwner, protected var page: Int, protected var size: Int) :
     LiveData<List<DATA>>() {
     private var state = LoadingState.READY
 
-    private var dataRequest: DataBuilder<IN?>? = null
-    private var asyncDataRequest: SuspendDataBuilder<IN?>? = null
+    private var dataRequest: DataBuilder? = null
+    private var asyncDataRequest: SuspendDataBuilder? = null
 
-    private lateinit var scope: CoroutineScope
+    private var scope: CoroutineScope? = null
     private var loadingJob: Job? = null
 
     private var footer: LoadingFooter? = null
 
     private var onChange: LiveObserve<List<DATA>>? = null
 
-    open fun with(owner: LifecycleOwner, scope: CoroutineScope): LivePagerX<IN, DATA> {
+    init {
+        attach(owner)
+    }
+
+    protected fun attach(owner: LifecycleOwner) {
+        if (owner.lifecycle.currentState == Lifecycle.State.DESTROYED) return
+
         owner.lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                 if (Lifecycle.Event.ON_DESTROY == event) {
@@ -43,8 +49,7 @@ abstract class LivePagerX<IN, DATA>(private var page: Int = 1, private var size:
             onChange?.invoke(it)
         })
 
-        this.scope = scope
-        return this
+        this.scope = owner.lifecycleScope
     }
 
     fun attach(footer: LoadingFooter) {
@@ -56,12 +61,12 @@ abstract class LivePagerX<IN, DATA>(private var page: Int = 1, private var size:
         page = 0
     }
 
-    fun dataBuilder(block: DataBuilder<IN?>): LivePagerX<IN, DATA> {
+    fun dataBuilder(block: DataBuilder): LivePagerX<DATA> {
         dataRequest = block
         return this
     }
 
-    fun asyncDataBuilder(block: SuspendDataBuilder<IN?>): LivePagerX<IN, DATA> {
+    fun asyncDataBuilder(block: SuspendDataBuilder): LivePagerX<DATA> {
         asyncDataRequest = block
         return this
     }
@@ -72,7 +77,7 @@ abstract class LivePagerX<IN, DATA>(private var page: Int = 1, private var size:
 
     private fun doRequest() {
         updateState(LoadingState.LOADING)
-        loadingJob = scope.launchIO {
+        loadingJob = scope?.launchIO {
             kotlin.runCatching {
                 val input = dataRequest?.invoke(page, size) ?: asyncDataRequest?.invoke(page, size)
                 setup(input)
@@ -83,7 +88,7 @@ abstract class LivePagerX<IN, DATA>(private var page: Int = 1, private var size:
         }
     }
 
-    private fun setup(input: IN?) {
+    private fun setup(input: Any?) {
         if (input != null) {
             val rsp = parse(input)
             if (rsp.success) {
@@ -105,13 +110,13 @@ abstract class LivePagerX<IN, DATA>(private var page: Int = 1, private var size:
     private fun updateState(state: LoadingState) {
         this.state = state
         footer?.also {
-            scope.launchMain {
+            scope?.launchMain {
                 it.updateState(state)
             }
         }
     }
 
-    abstract fun parse(input: IN): Response<DATA>
+    abstract fun parse(input: Any): Response<DATA>
 
     @Synchronized
     open fun nextPage() {
@@ -134,7 +139,7 @@ abstract class LivePagerX<IN, DATA>(private var page: Int = 1, private var size:
     }
 }
 
-class LivePager<DATA> : LivePagerX<Any, DATA>() {
+class LivePager<DATA>(owner: LifecycleOwner, page: Int = 1, size: Int = 20) : LivePagerX<DATA>(owner, page, size) {
     override fun parse(input: Any): Response<DATA> {
         val rsp = ParserFactory.parse<DATA>(input)
         return rsp ?: Response(false)
