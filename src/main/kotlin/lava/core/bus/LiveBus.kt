@@ -31,6 +31,20 @@ abstract class LiveBus {
     fun send(flag: Int, any: Any? = null) {
         live.value = Event(flag, any)
     }
+
+    /**
+     * async in mainThread
+     */
+    fun <T> post(flag: Flag<T>, any: T? = null) {
+        live.postValue(Event(flag.flag, any))
+    }
+
+    /**
+     * sync in any thread
+     */
+    fun <T> send(flag: Flag<T>, any: T? = null) {
+        live.value = Event(flag.flag, any)
+    }
 }
 
 class Bus(private val owner: LifecycleOwner, private val live: MutableLiveData<Event>) :
