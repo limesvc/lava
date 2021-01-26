@@ -13,3 +13,10 @@ inline fun <T, R> notNull(t: T?, r: R?, block: Function2<T, R, Unit>) {
 inline fun <T, R, V> notNull(t: T?, r: R?, v: V?, block: Function3<T, R, V, Unit>) {
     if (t != null && r != null && v != null) block(t, r, v)
 }
+
+internal fun notNull(vararg ts: Any?): Boolean {
+    ts.forEach {
+        if (it == null) return false
+    }
+    return true
+}

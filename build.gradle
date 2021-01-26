@@ -62,4 +62,12 @@ dependencies {
     api deps.androidx.core
     api deps.androidx.appcompat
     api deps.androidx.swiperefreshlayout
+
+    implementation(deps.glide.runtime) {
+        exclude group: "com.android.support"
+    }
+    implementation(deps.glide.okhttp3) {
+        exclude group: "com.squareup.okhttp3", module: "okhttp"
+    }
+    kapt deps.glide.compiler
 }

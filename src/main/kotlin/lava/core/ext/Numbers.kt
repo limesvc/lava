@@ -61,3 +61,28 @@ inline fun String?.safeDouble(default: Double = 0.0): Double {
         default
     }
 }
+
+fun <T : Number, R> doOnNotZero(t: T?, block: (T) -> R?): R? {
+    return if (t != null && t != 0) {
+        block.invoke(t)
+    } else {
+        null
+    }
+}
+
+fun <T1 : Number, T2 : Number, R> doOnNotZero(t1: T1?, t2: T2?, block: (t1: T1, t2: T2) -> R?): R? {
+    return if (notNull(t1, t2)) {
+        if (notZero(t1!!, t2!!)) {
+            block.invoke(t1, t2)
+        } else {
+            null
+        }
+    } else null
+}
+
+private fun <T : Number> notZero(vararg ts: T): Boolean {
+    ts.forEach {
+        if (it == 0) return false
+    }
+    return true
+}
