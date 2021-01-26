@@ -1,13 +1,17 @@
-package lava.core.list
+package lava.core.widget.list
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import lava.core.net.LoadingState
+import lava.core.type.Block
+import lava.core.widget.list.footer.LoadingFooter
 import lava.core.util.LPUtil
+import lava.core.widget.list.page.IRefresh
 
-class ListViewX(context: Context, attrs: AttributeSet?) : SwipeRefreshLayout(context, attrs) {
+class ListViewX(context: Context, attrs: AttributeSet?) : SwipeRefreshLayout(context, attrs),
+    IRefresh {
     @Suppress
     val recyclerView: RecyclerView = RecyclerView(context)
 
@@ -35,5 +39,26 @@ class ListViewX(context: Context, attrs: AttributeSet?) : SwipeRefreshLayout(con
 
     fun setLayoutManager(layoutManager: RecyclerView.LayoutManager) {
         recyclerView.layoutManager = layoutManager
+    }
+
+    override fun onRefresh(block: Block) {
+        setOnRefreshListener(block)
+    }
+
+    override fun updateState(state: LoadingState) {
+        when (state) {
+            LoadingState.READY -> {
+                isEnabled = true
+                isRefreshing = false
+            }
+            LoadingState.LOADING -> {
+                isRefreshing = true
+            }
+            LoadingState.ERROR -> {
+                isEnabled = false
+                isRefreshing = false
+            }
+            LoadingState.DONE -> Unit
+        }
     }
 }

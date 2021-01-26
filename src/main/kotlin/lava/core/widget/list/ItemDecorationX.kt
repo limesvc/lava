@@ -1,4 +1,4 @@
-package lava.core.list
+package lava.core.widget.list
 
 import android.graphics.Rect
 import android.view.View

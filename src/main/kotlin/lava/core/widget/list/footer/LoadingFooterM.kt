@@ -1,4 +1,4 @@
-package lava.core.list
+package lava.core.widget.list.footer
 
 import android.content.Context
 import android.graphics.Color
@@ -7,6 +7,7 @@ import android.view.Gravity
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import lava.core.net.LoadingState
 import lava.core.util.LPUtil
 import lava.core.util.MATCH
 

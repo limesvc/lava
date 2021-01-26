@@ -1,15 +1,17 @@
 package lava.core.design.viewmodel
 
 import androidx.lifecycle.ViewModel
-import lava.core.bus.Flag
-import lava.core.bus.LiveBus
-import lava.core.bus.VMBus
+import lava.core.bus.*
 
 abstract class ViewModelX : ViewModel() {
     private val bus = VMBus()
 
-    protected infix fun <T> Flag<T>.set(any: T) {
-        bus.send(flag, any)
+    protected infix fun <T> Flag<T>.set(value: T) {
+        bus.send(flag, value)
+    }
+
+    protected operator fun <T> Flag<T>.invoke(value: T? = null) {
+        bus.send(flag, value)
     }
 
     fun connect(block: LiveBus.() -> Unit) {

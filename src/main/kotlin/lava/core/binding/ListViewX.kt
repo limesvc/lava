@@ -3,12 +3,11 @@ package lava.core.binding
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import lava.core.list.ListAdapterX
-import lava.core.list.ListViewX
-import lava.core.list.LoadingFooter
-import lava.core.list.LoadingFooterM
-import lava.core.list.page.LivePagerX
-import lava.core.live.LiveList
+import lava.core.widget.list.ListAdapterX
+import lava.core.widget.list.ListViewX
+import lava.core.widget.list.footer.LoadingFooter
+import lava.core.widget.list.footer.LoadingFooterM
+import lava.core.widget.list.page.LivePagerX
 
 const val PREFIX_LIST = "android:list_"
 const val LIST_DATA = PREFIX_LIST.plus("data")
@@ -56,15 +55,15 @@ fun <T, V : ListAdapterX<T, *>> bindListView(
 
     loadMore?.also {
         val plugin = footer ?: LoadingFooterM(listView.context)
-        plugin.onLoad(loadMore::invoke)
+        plugin.onLoadMore(loadMore::invoke)
         listView.initLoadMore(footer)
     }
 
     pager?.also {
         val plugin = footer ?: LoadingFooterM(listView.context)
+        listView.initLoadMore(plugin)
         pager.attach(plugin)
-        listView.initLoadMore(footer)
-        listView.setOnRefreshListener(it::refresh)
+        pager.attach(listView)
         pager.observeOnce {
             curAdapter?.setData(it)
         }

@@ -1,4 +1,4 @@
-package lava.core.list.page
+package lava.core.widget.list.page
 
 import lava.core.obj.UNCHECKED_CAST
 import kotlin.reflect.KClass

@@ -1,4 +1,4 @@
-package lava.core.list.page
+package lava.core.widget.list.page
 
 import androidx.lifecycle.*
 import kotlinx.coroutines.CancellationException
@@ -6,8 +6,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import lava.core.ext.launchIO
 import lava.core.ext.launchMain
-import lava.core.list.LoadingFooter
-import lava.core.list.LoadingState
+import lava.core.net.LoadingState
 import logger.L
 
 typealias DataBuilder = (page: Int, size: Int) -> Any?
@@ -25,7 +24,9 @@ abstract class LivePagerX<DATA>(owner: LifecycleOwner, protected var page: Int, 
     private var scope: CoroutineScope? = null
     private var loadingJob: Job? = null
 
-    private var footer: LoadingFooter? = null
+    private var loadMorePlugin: ILoadMore? = null
+    private var refreshPlugin: IRefresh? = null
+    private var layerPlugin: ILoadLayer? = null
 
     private var onChange: LiveObserve<List<DATA>>? = null
 
@@ -52,9 +53,19 @@ abstract class LivePagerX<DATA>(owner: LifecycleOwner, protected var page: Int, 
         this.scope = owner.lifecycleScope
     }
 
-    fun attach(footer: LoadingFooter) {
-        this.footer = footer
-        footer.onLoad(::nextPage)
+    fun attach(plugin: ILoadMore) {
+        loadMorePlugin = plugin
+        plugin.onLoadMore(::nextPage)
+    }
+
+    fun attach(plugin: IRefresh){
+        refreshPlugin = plugin
+        plugin.onRefresh(::refresh)
+    }
+
+    fun attach(plugin: ILoadLayer){
+        layerPlugin = plugin
+        layerPlugin?.onLoad(::refresh)
     }
 
     open fun reset() {
@@ -96,8 +107,8 @@ abstract class LivePagerX<DATA>(owner: LifecycleOwner, protected var page: Int, 
                 if (rsp.list.isNullOrEmpty() || rsp.list.size < size) {
                     updateState(LoadingState.DONE)
                 } else {
-                    page++
                     updateState(LoadingState.READY)
+                    page++
                 }
             } else {
                 updateState(LoadingState.ERROR)
@@ -109,9 +120,15 @@ abstract class LivePagerX<DATA>(owner: LifecycleOwner, protected var page: Int, 
 
     private fun updateState(state: LoadingState) {
         this.state = state
-        footer?.also {
+        if (loadMorePlugin != null || refreshPlugin != null) {
             scope?.launchMain {
-                it.updateState(state)
+                if (page == 1 && layerPlugin != null) {
+                    layerPlugin?.updateState(state)
+                } else {
+                    layerPlugin?.updateState(state)
+                    refreshPlugin?.updateState(state)
+                    loadMorePlugin?.updateState(state)
+                }
             }
         }
     }

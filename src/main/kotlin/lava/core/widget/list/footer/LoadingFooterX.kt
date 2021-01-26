@@ -1,10 +1,12 @@
-package lava.core.list
+package lava.core.widget.list.footer
 
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import lava.core.ext.am
+import lava.core.net.LoadingState
+import lava.core.widget.list.ListAdapterM
 import lava.core.type.Block
 
 abstract class LoadingFooterX @JvmOverloads constructor(
@@ -61,7 +63,7 @@ abstract class LoadingFooterX @JvmOverloads constructor(
         }
     }
 
-    override fun onLoad(block: Block) {
+    override fun onLoadMore(block: Block) {
         loadMoreLsn = block
     }
 

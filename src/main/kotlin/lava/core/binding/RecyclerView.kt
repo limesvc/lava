@@ -2,7 +2,7 @@ package lava.core.binding
 
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import lava.core.list.ListAdapterX
+import lava.core.widget.list.ListAdapterX
 import lava.core.live.LiveList
 
 const val PREFIX_RECYCLE = "android:recycle_"
