@@ -133,7 +133,7 @@ abstract class LivePagerX<DATA>(owner: LifecycleOwner, protected var page: Int, 
         }
     }
 
-    abstract fun parse(input: Any): Response<DATA>
+    abstract fun parse(input: Any): ParseResult<DATA>
 
     @Synchronized
     open fun nextPage() {
@@ -157,8 +157,8 @@ abstract class LivePagerX<DATA>(owner: LifecycleOwner, protected var page: Int, 
 }
 
 class LivePager<DATA>(owner: LifecycleOwner, page: Int = 1, size: Int = 20) : LivePagerX<DATA>(owner, page, size) {
-    override fun parse(input: Any): Response<DATA> {
+    override fun parse(input: Any): ParseResult<DATA> {
         val rsp = ParserFactory.parse<DATA>(input)
-        return rsp ?: Response(false)
+        return rsp ?: ParseResult(false)
     }
 }
