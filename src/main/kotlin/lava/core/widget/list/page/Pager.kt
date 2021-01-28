@@ -6,6 +6,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import lava.core.ext.launchIO
 import lava.core.ext.launchMain
+import lava.core.live.LiveBinding
 import lava.core.net.LoadingState
 import logger.L
 
@@ -14,8 +15,8 @@ typealias SuspendDataBuilder = suspend (page: Int, size: Int) -> Any?
 
 typealias LiveObserve<IN> = (IN) -> Unit
 
-abstract class LivePagerX<DATA>(owner: LifecycleOwner, protected var page: Int, protected var size: Int) :
-    LiveData<List<DATA>>() {
+abstract class LivePagerX<DATA>(protected var page: Int, protected var size: Int) :
+    LiveBinding<List<DATA>>() {
     private var state = LoadingState.READY
 
     private var dataRequest: DataBuilder? = null
@@ -30,27 +31,14 @@ abstract class LivePagerX<DATA>(owner: LifecycleOwner, protected var page: Int, 
 
     private var onChange: LiveObserve<List<DATA>>? = null
 
-    init {
-        attach(owner)
+    override fun onLifeCycleChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        if (Lifecycle.Event.ON_DESTROY == event) {
+            loadingJob?.cancel()
+        }
     }
 
-    protected fun attach(owner: LifecycleOwner) {
-        if (owner.lifecycle.currentState == Lifecycle.State.DESTROYED) return
-
-        owner.lifecycle.addObserver(object : LifecycleEventObserver {
-            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-                if (Lifecycle.Event.ON_DESTROY == event) {
-                    loadingJob?.cancel()
-                    owner.lifecycle.removeObserver(this)
-                }
-            }
-        })
-
-        observe(owner, Observer {
-            onChange?.invoke(it)
-        })
-
-        this.scope = owner.lifecycleScope
+    override fun onChanged(value: List<DATA>) {
+        onChange?.invoke(value)
     }
 
     fun attach(plugin: ILoadMore) {
@@ -58,12 +46,12 @@ abstract class LivePagerX<DATA>(owner: LifecycleOwner, protected var page: Int, 
         plugin.onLoadMore(::nextPage)
     }
 
-    fun attach(plugin: IRefresh){
+    fun attach(plugin: IRefresh) {
         refreshPlugin = plugin
         plugin.onRefresh(::refresh)
     }
 
-    fun attach(plugin: ILoadLayer){
+    fun attach(plugin: ILoadLayer) {
         layerPlugin = plugin
         layerPlugin?.onLoad(::refresh)
     }
@@ -154,9 +142,14 @@ abstract class LivePagerX<DATA>(owner: LifecycleOwner, protected var page: Int, 
         loadingJob?.cancel(cause)
         loadingJob = null
     }
+
+    fun launch(scope: CoroutineScope) {
+        this.scope = scope
+        nextPage()
+    }
 }
 
-class LivePager<DATA>(owner: LifecycleOwner, page: Int = 1, size: Int = 20) : LivePagerX<DATA>(owner, page, size) {
+class LivePager<DATA>(page: Int = 1, size: Int = 20) : LivePagerX<DATA>(page, size) {
     override fun parse(input: Any): ParseResult<DATA> {
         val rsp = ParserFactory.parse<DATA>(input)
         return rsp ?: ParseResult(false)
