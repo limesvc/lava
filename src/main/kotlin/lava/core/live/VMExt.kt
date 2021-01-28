@@ -4,7 +4,8 @@ import lava.core.bus.Flag
 import lava.core.design.viewmodel.ViewModelX
 import lava.core.net.LoadingState
 import lava.core.type.Block
-import lava.core.widget.list.page.ILoadLayer
+import lava.core.widget.list.page.IErrorView
+import lava.core.widget.list.page.ILoadingView
 
 /**
  * Created by svc on 2021/1/28
@@ -19,14 +20,10 @@ val ViewModelX.flagLoadingState: Flag<LoadingState>
         }
     }
 
-val ViewModelX.loadingPlugin: ILoadLayer
+val ViewModelX.loadingPlugin: ILoadingView
     get() {
         return getOrCreate(VM_LOADING_PLUGIN) {
-            object : ILoadLayer {
-                override fun onLoad(block: Block) {
-
-                }
-
+            object : ILoadingView {
                 override fun updateState(state: LoadingState) {
                     sendUI(flagLoadingState.flag, state)
                 }
@@ -44,14 +41,10 @@ val ViewModelX.flagErrorState: Flag<LoadingState>
         }
     }
 
-val ViewModelX.errorPlugin: ILoadLayer
+val ViewModelX.errorPlugin: IErrorView
     get() {
         return getOrCreate(VM_ERROR_PLUGIN) {
-            object : ILoadLayer {
-                override fun onLoad(block: Block) {
-
-                }
-
+            object : IErrorView {
                 override fun updateState(state: LoadingState) {
                     sendUI(flagErrorState.flag, state)
                 }

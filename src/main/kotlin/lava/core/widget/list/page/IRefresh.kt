@@ -18,8 +18,10 @@ interface ILoadMore {
     fun updateState(state: LoadingState)
 }
 
-interface ILoadLayer {
-    fun onLoad(block: Block)
+interface ILoadingView {
+    fun updateState(state: LoadingState)
+}
 
+interface IErrorView {
     fun updateState(state: LoadingState)
 }

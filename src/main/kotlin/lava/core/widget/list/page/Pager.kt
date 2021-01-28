@@ -27,7 +27,7 @@ abstract class LivePagerX<DATA>(protected var page: Int, protected var size: Int
 
     private var loadMorePlugin: ILoadMore? = null
     private var refreshPlugin: IRefresh? = null
-    private var layerPlugin: ILoadLayer? = null
+    private var layerPlugin: ILoadingView? = null
 
     private var onChange: LiveObserve<List<DATA>>? = null
 
@@ -51,9 +51,8 @@ abstract class LivePagerX<DATA>(protected var page: Int, protected var size: Int
         plugin.onRefresh(::refresh)
     }
 
-    fun attach(plugin: ILoadLayer) {
+    fun attach(plugin: ILoadingView) {
         layerPlugin = plugin
-        layerPlugin?.onLoad(::refresh)
     }
 
     open fun reset() {
