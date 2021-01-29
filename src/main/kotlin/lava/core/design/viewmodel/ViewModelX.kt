@@ -3,6 +3,7 @@ package lava.core.design.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import lava.core.bus.*
+import lava.core.design.view.struct.StructState
 import lava.core.live.loadingPlugin
 import lava.core.obj.UNCHECKED_CAST
 import lava.core.widget.list.page.LivePager
@@ -41,6 +42,10 @@ abstract class ViewModelX : ViewModel() {
         val obj = block()
         bin[key] = obj
         return obj
+    }
+
+    fun onViewStateChanged(state: StructState) {
+
     }
 
     open fun onStart() {}
