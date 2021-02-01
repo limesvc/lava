@@ -37,4 +37,8 @@ abstract class ActivityX : AppCompatActivity(), StructHost {
     protected open fun initView(binding: ViewDataBinding) {}
 
     protected open fun initEvent() {}
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+    }
 }

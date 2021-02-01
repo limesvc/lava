@@ -2,7 +2,7 @@ package lava.core.design.view.struct
 
 import lava.core.obj.UNCHECKED_CAST
 
-class NavigateStructX : NavigateStruct {
+class TitleStructX : NavigateStruct {
     companion object Key : Struct<NavigateStruct>
 
     override fun <T> get(struct: Struct<T>): T? {

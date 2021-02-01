@@ -3,10 +3,8 @@ package lava.core.design.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import lava.core.bus.*
-import lava.core.design.view.struct.StructState
-import lava.core.live.loadingPlugin
+import lava.core.design.view.struct.*
 import lava.core.obj.UNCHECKED_CAST
-import lava.core.widget.list.page.LivePager
 
 abstract class ViewModelX : ViewModel() {
     private val bin by lazy { mutableMapOf<String, Any>() }
@@ -44,9 +42,25 @@ abstract class ViewModelX : ViewModel() {
         return obj
     }
 
-    fun onViewStateChanged(state: StructState) {
+    fun <T> onViewStateChanged(state: StructState<T>): T {
+        when (state) {
+            is OnCreate -> Unit
+            is OnLoaded -> onStart()
+            is OnRetry -> onRetry()
+            is OnBackPressed -> Unit
+        }
 
+        return state.default
     }
 
     open fun onStart() {}
+
+    open fun onRetry() {}
+
+    /**
+     * return intercept or not
+     */
+    open fun onBackPressed(): Boolean {
+        return false
+    }
 }
