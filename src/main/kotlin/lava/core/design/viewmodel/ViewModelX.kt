@@ -43,11 +43,12 @@ abstract class ViewModelX : ViewModel() {
     }
 
     fun <T> onViewStateChanged(state: StructState<T>): T {
+        @Suppress(UNCHECKED_CAST)
         when (state) {
             is OnCreate -> Unit
             is OnLoaded -> onStart()
             is OnRetry -> onRetry()
-            is OnBackPressed -> Unit
+            is OnBackPressed -> return onBackPressed() as T
         }
 
         return state.default
