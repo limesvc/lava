@@ -1,6 +1,7 @@
 package lava.core.design.view
 
 import android.os.Bundle
+import android.view.View
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
 import lava.core.bus.Bus
@@ -20,8 +21,8 @@ abstract class ActivityV<VM : ViewModelX> : ActivityX() {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onSetup(binding: ViewDataBinding) {
-        super.onSetup(binding)
+    override fun onSetup(contentView: View, binding: ViewDataBinding) {
+        super.onSetup(contentView, binding)
         vm.connect { bindVM() }
         vm.onStart()
     }

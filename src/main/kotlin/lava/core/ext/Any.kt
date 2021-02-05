@@ -6,6 +6,10 @@ inline fun <reified T> Any?.am(block: Function1<T, Unit>) {
     }
 }
 
+inline fun <T: Any> T?.just(block: T.() -> Unit){
+    this?.block()
+}
+
 inline fun <T, R> notNull(t: T?, r: R?, block: Function2<T, R, Unit>) {
     if (t != null && r != null) block(t, r)
 }

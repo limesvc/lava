@@ -1,5 +1,6 @@
 package lava.core.design.view.struct
 
+import android.view.View
 import androidx.databinding.ViewDataBinding
 
 /**
@@ -12,7 +13,7 @@ interface Struct<T>
 interface StructHost {
     fun getStructView(): StructView
     fun binding(): ViewDataBinding
-    fun onSetup(binding: ViewDataBinding)
+    fun onSetup(contentView: View, binding: ViewDataBinding)
 }
 
 interface StructView {
@@ -22,15 +23,15 @@ interface StructView {
         return LinkStruct(structView, this)
     }
 
-    fun build(host: StructHost) {
-        this[DecorStruct]?.install(this, host)
+    fun build(host: StructHost):View {
+        return this[DecorStruct]?.install(this, host)!!
     }
 }
 
 interface DecorStruct : StructView {
     companion object Key : Struct<DecorStruct>
 
-    fun install(struct: StructView, host: StructHost)
+    fun install(struct: StructView, host: StructHost): View
 }
 
 interface ErrorStruct : StructView {
