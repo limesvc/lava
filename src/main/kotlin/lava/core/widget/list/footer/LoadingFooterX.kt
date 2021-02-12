@@ -3,7 +3,10 @@ package lava.core.widget.list.footer
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import lava.core.ext.am
 import lava.core.net.LoadingState
 import lava.core.widget.list.ListAdapterM
@@ -33,7 +36,22 @@ abstract class LoadingFooterX @JvmOverloads constructor(
                     && state == LoadingState.READY
                     && loadMoreLsn != null
                 ) {
-                    updateState(LoadingState.LOADING)
+                    val layoutManager = requireNotNull(recyclerView.layoutManager)
+                    val visibleItemCount = layoutManager.childCount
+                    val totalItemCount = layoutManager.itemCount
+
+                    var firstVisibleItem = 0
+                    val firstVisibleInto: IntArray? = null
+                    when (layoutManager) {
+                        is GridLayoutManager -> firstVisibleItem = layoutManager.findFirstVisibleItemPosition()
+                        is LinearLayoutManager -> firstVisibleItem = layoutManager.findFirstVisibleItemPosition()
+                        is StaggeredGridLayoutManager -> firstVisibleItem = layoutManager.findFirstVisibleItemPositions(firstVisibleInto)[0]
+                    }
+
+                    val total = visibleItemCount + firstVisibleItem
+                    if (total >= totalItemCount) {
+                        updateState(LoadingState.LOADING)
+                    }
                 }
             }
         }

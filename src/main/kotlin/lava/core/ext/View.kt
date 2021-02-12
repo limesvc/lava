@@ -28,3 +28,24 @@ fun View?.safeClick(block: (v: View) -> Unit){
         }
     }
 }
+
+fun View?.show(){
+    if (this == null) return
+    if (visibility != View.VISIBLE) {
+        visibility = View.VISIBLE
+    }
+}
+
+fun View?.gone(){
+    if (this == null) return
+    if (visibility != View.GONE) {
+        visibility = View.GONE
+    }
+}
+
+fun View?.hide(){
+    if (this == null) return
+    if (visibility != View.INVISIBLE) {
+        visibility = View.INVISIBLE
+    }
+}

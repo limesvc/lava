@@ -25,9 +25,12 @@ abstract class LivePagerX<DATA>(protected var page: Int, protected var size: Int
     private var scope: CoroutineScope? = null
     private var loadingJob: Job? = null
 
-    private var loadMorePlugin: ILoadMore? = null
-    private var refreshPlugin: IRefresh? = null
+//    private var loadMorePlugin: ILoadMore? = null
+//    private var refreshPlugin: IRefresh? = null
     private var layerPlugin: ILoadingView? = null
+    private var errorPlugin: IErrorView? = null
+
+    private var curLoader: ILoader? = null
 
     private var onChange: LiveObserve<List<DATA>>? = null
 
@@ -42,17 +45,31 @@ abstract class LivePagerX<DATA>(protected var page: Int, protected var size: Int
     }
 
     fun attach(plugin: ILoadMore) {
-        loadMorePlugin = plugin
-        plugin.onLoadMore(::nextPage)
+        plugin.onLoadMore {
+            curLoader = plugin
+            nextPage()
+        }
     }
 
     fun attach(plugin: IRefresh) {
-        refreshPlugin = plugin
-        plugin.onRefresh(::refresh)
+        plugin.onRefresh {
+            curLoader = plugin
+            refresh()
+        }
     }
 
     fun attach(plugin: ILoadingView) {
         layerPlugin = plugin
+        plugin.onCancel {
+            curLoader = plugin
+            loadingJob?.cancel()
+        }
+    }
+
+    fun attach(plugin: IErrorView) {
+        plugin.onRetry {
+            curLoader = plugin
+        }
     }
 
     open fun reset() {
@@ -107,14 +124,13 @@ abstract class LivePagerX<DATA>(protected var page: Int, protected var size: Int
 
     private fun updateState(state: LoadingState) {
         this.state = state
-        if (loadMorePlugin != null || refreshPlugin != null) {
+        if (curLoader != null) {
             scope?.launchMain {
-                if (page == 1 && layerPlugin != null) {
+                if (page == 1) {
                     layerPlugin?.updateState(state)
+                    errorPlugin?.updateState(state)
                 } else {
-                    layerPlugin?.updateState(state)
-                    refreshPlugin?.updateState(state)
-                    loadMorePlugin?.updateState(state)
+                    curLoader?.updateState(state)
                 }
             }
         }
@@ -123,7 +139,7 @@ abstract class LivePagerX<DATA>(protected var page: Int, protected var size: Int
     abstract fun parse(input: Any): ParseResult<DATA>
 
     @Synchronized
-    open fun nextPage() {
+    protected open fun nextPage() {
         if (state == LoadingState.READY) {
             doRequest()
         }

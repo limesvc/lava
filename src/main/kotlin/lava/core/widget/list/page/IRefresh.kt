@@ -6,22 +6,24 @@ import lava.core.type.Block
 /**
  * Created by wuxi on 2021/1/26
  */
-interface IRefresh {
+interface ILoader {
+    fun updateState(state: LoadingState)
+}
+
+interface IRefresh : ILoader {
     fun onRefresh(block: Block)
 
-    fun updateState(state: LoadingState)
 }
 
-interface ILoadMore {
+interface ILoadMore : ILoader {
     fun onLoadMore(block: Block)
 
-    fun updateState(state: LoadingState)
 }
 
-interface ILoadingView {
-    fun updateState(state: LoadingState)
+interface ILoadingView : ILoader {
+    fun onCancel(block: Block)
 }
 
-interface IErrorView {
-    fun updateState(state: LoadingState)
+interface IErrorView : ILoader {
+    fun onRetry(block: Block)
 }

@@ -1,7 +1,10 @@
 package lava.core.design.view.struct
 
+import android.content.Context
+import android.view.DragEvent
 import android.view.View
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.Lifecycle
 
 /**
  * 模块化拼凑基类功能
@@ -23,23 +26,31 @@ interface StructView {
         return LinkStruct(structView, this)
     }
 
-    fun build(host: StructHost):View {
+    fun build(host: StructHost): View {
         return this[DecorStruct]?.install(this, host)!!
     }
+
+    fun onLifeCycleChanged(event: Lifecycle.Event) {
+
+    }
+
+    fun getView(context: Context): View
 }
 
 interface DecorStruct : StructView {
     companion object Key : Struct<DecorStruct>
 
     fun install(struct: StructView, host: StructHost): View
+
+    fun onLifeCycleEvent(event: Lifecycle.Event) {}
 }
 
 interface ErrorStruct : StructView {
     companion object Key : Struct<ErrorStruct>
 }
 
-interface NavigateStruct : StructView {
-    companion object Key : Struct<NavigateStruct>
+interface TitleStruct : StructView {
+    companion object Key : Struct<TitleStruct>
 }
 
 interface LoadingStruct : StructView {
@@ -50,5 +61,9 @@ class LinkStruct(private val stuff: StructView, private val next: StructView) : 
 
     override fun <T> get(struct: Struct<T>): T? {
         return stuff[struct] ?: next[struct]
+    }
+
+    override fun getView(context: Context): View {
+        return stuff.getView(context)
     }
 }

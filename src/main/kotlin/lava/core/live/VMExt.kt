@@ -24,6 +24,9 @@ val ViewModelX.loadingPlugin: ILoadingView
     get() {
         return getOrCreate(VM_LOADING_PLUGIN) {
             object : ILoadingView {
+                override fun onCancel(block: Block) {
+                }
+
                 override fun updateState(state: LoadingState) {
                     sendUI(flagLoadingState.flag, state)
                 }
@@ -45,6 +48,9 @@ val ViewModelX.errorPlugin: IErrorView
     get() {
         return getOrCreate(VM_ERROR_PLUGIN) {
             object : IErrorView {
+                override fun onRetry(block: Block) {
+                }
+
                 override fun updateState(state: LoadingState) {
                     sendUI(flagErrorState.flag, state)
                 }

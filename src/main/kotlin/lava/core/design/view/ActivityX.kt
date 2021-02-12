@@ -6,7 +6,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ViewDataBinding
-import lava.core.design.view.struct.CommonDecorView
+import lava.core.design.view.struct.DecorView
+import lava.core.design.view.struct.LoadingView
 import lava.core.design.view.struct.StructHost
 import lava.core.design.view.struct.StructView
 import kotlin.reflect.KClass
@@ -32,7 +33,7 @@ abstract class ActivityX : AppCompatActivity(), StructHost {
     }
 
     override fun getStructView(): StructView {
-        return CommonDecorView()
+        return DecorView() + LoadingView()
     }
 
     protected open fun initView(binding: ViewDataBinding) {}
