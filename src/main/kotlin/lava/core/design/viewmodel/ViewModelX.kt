@@ -7,7 +7,7 @@ import lava.core.design.view.struct.*
 import lava.core.obj.UNCHECKED_CAST
 
 abstract class ViewModelX : ViewModel() {
-    private val bin by lazy { mutableMapOf<String, Any>() }
+    private val bucket by lazy { mutableMapOf<String, Any>() }
 
     private val bus = VMBus()
 
@@ -33,13 +33,19 @@ abstract class ViewModelX : ViewModel() {
     @Synchronized
     internal fun <T : Any> getOrCreate(key: String, block: () -> T): T {
         @Suppress(UNCHECKED_CAST)
-        val exist = bin[key] as? T
+        val exist = bucket[key] as? T
         if (exist != null) {
             return exist
         }
         val obj = block()
-        bin[key] = obj
+        bucket[key] = obj
         return obj
+    }
+
+    @Synchronized
+    internal fun <T : Any> get(key: String): T? {
+        @Suppress(UNCHECKED_CAST)
+        return bucket[key] as? T
     }
 
     fun <T> onViewStateChanged(state: StructState<T>): T {

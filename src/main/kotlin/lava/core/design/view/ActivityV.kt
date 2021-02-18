@@ -6,8 +6,13 @@ import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
 import lava.core.bus.Bus
 import lava.core.bus.LiveBus
+import lava.core.design.view.struct.StructState
 import lava.core.design.viewmodel.ViewModelX
+import lava.core.ext.just
+import lava.core.live.VM_LOADING_PLUGIN
+import lava.core.live.flagLoadingState
 import lava.core.util.getGenericClass
+import lava.core.widget.list.page.ILoadingView
 
 abstract class ActivityV<VM : ViewModelX> : ActivityX() {
     private val vmProvider
@@ -27,7 +32,19 @@ abstract class ActivityV<VM : ViewModelX> : ActivityX() {
         vm.onStart()
     }
 
-    protected fun LiveBus.bindVM() {
+    private fun Bus.bindStruct() {
+        vm.get<ILoadingView>(VM_LOADING_PLUGIN)?.just {
+            on(vm.flagLoadingState) {
+                updateState(it)
+            }
+        }
+    }
+
+    override fun <T> onViewStateChanged(state: StructState<T>): T {
+        return vm.onViewStateChanged(state)
+    }
+
+    private fun LiveBus.bindVM() {
         with(this@ActivityV).linkVMLive()
     }
 

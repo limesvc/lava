@@ -19,7 +19,7 @@ class DecorView: DecorStructX() {
         decor.layoutParams = LPUtil.viewGroup()
 
         var titleExist = false
-        get(TitleStruct)?.just {
+        struct[TitleStruct]?.just {
             titleExist = true
             val constraint = LPUtil.constraint(height = 48)
             constraint.startToStart = R.id.parent
@@ -29,7 +29,7 @@ class DecorView: DecorStructX() {
             decor.addView(view, constraint)
         }
 
-        get(ErrorStruct)?.just {
+        struct[ErrorStruct]?.just {
             val constraint = LPUtil.constraint()
             constraint.startToStart = R.id.parent
             constraint.topToTop = if (titleExist) R.id.struct_title else R.id.parent
@@ -45,7 +45,7 @@ class DecorView: DecorStructX() {
         contentConstraint.topToTop = if (titleExist) R.id.struct_title else R.id.parent
         decor.addView(binding.root, contentConstraint)
 
-        get(LoadingStruct)?.just {
+        struct[LoadingStruct]?.just {
             val constraint = LPUtil.constraint()
             constraint.startToStart = R.id.parent
             constraint.topToTop = if (titleExist) R.id.struct_title else R.id.parent

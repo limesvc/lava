@@ -14,6 +14,7 @@ import kotlin.reflect.KClass
 
 abstract class ActivityX : AppCompatActivity(), StructHost {
     protected lateinit var binding: ViewDataBinding
+    protected lateinit var struct: StructView
 
     protected fun <T : Activity> startActivity(clazz: KClass<T>) {
         startActivity(Intent(this, clazz.java))

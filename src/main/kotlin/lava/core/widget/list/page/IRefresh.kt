@@ -12,12 +12,10 @@ interface ILoader {
 
 interface IRefresh : ILoader {
     fun onRefresh(block: Block)
-
 }
 
 interface ILoadMore : ILoader {
     fun onLoadMore(block: Block)
-
 }
 
 interface ILoadingView : ILoader {

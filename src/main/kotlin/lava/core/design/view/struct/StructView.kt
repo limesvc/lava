@@ -5,6 +5,7 @@ import android.view.DragEvent
 import android.view.View
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Lifecycle
+import lava.core.net.LoadingState
 
 /**
  * 模块化拼凑基类功能
@@ -17,6 +18,7 @@ interface StructHost {
     fun getStructView(): StructView
     fun binding(): ViewDataBinding
     fun onSetup(contentView: View, binding: ViewDataBinding)
+    fun <T> onViewStateChanged(state: StructState<T>): T
 }
 
 interface StructView {
@@ -30,9 +32,9 @@ interface StructView {
         return this[DecorStruct]?.install(this, host)!!
     }
 
-    fun onLifeCycleChanged(event: Lifecycle.Event) {
+    fun onLifeCycleChanged(event: Lifecycle.Event) {}
 
-    }
+    fun updateState(state: LoadingState) {}
 
     fun getView(context: Context): View
 }
