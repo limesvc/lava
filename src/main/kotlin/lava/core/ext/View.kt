@@ -2,6 +2,7 @@ package lava.core.ext
 
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import lava.core.R
 
 val View.inflater: LayoutInflater
@@ -47,5 +48,11 @@ fun View?.hide(){
     if (this == null) return
     if (visibility != View.INVISIBLE) {
         visibility = View.INVISIBLE
+    }
+}
+
+fun View?.removeFromParent(){
+    this?.parent.am<ViewGroup> {
+        it.removeView(this)
     }
 }

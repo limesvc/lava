@@ -21,8 +21,17 @@ fun afterOnUI(millis: Long, block: Block): Job {
 fun interval(millis: Long, block: Block): Job {
     return GlobalScope.launch {
         while (true) {
-            delay(millis)
             block()
+            delay(millis)
+        }
+    }
+}
+
+fun CoroutineScope.interval(millis: Long, block: Block): Job {
+    return launch {
+        while (true) {
+            block()
+            delay(millis)
         }
     }
 }

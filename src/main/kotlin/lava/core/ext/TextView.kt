@@ -21,5 +21,13 @@ fun TextView?.cancelBold() {
 }
 
 fun TextView?.underline() {
-    this?.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+    this?.just {
+        paintFlags = paintFlags.or(Paint.UNDERLINE_TEXT_FLAG)
+    }
+}
+
+fun TextView?.strikeThrough() {
+    this?.just {
+        paintFlags = paintFlags.or(Paint.STRIKE_THRU_TEXT_FLAG)
+    }
 }
