@@ -6,10 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.ViewDataBinding
-import lava.core.design.view.struct.DecorView
-import lava.core.design.view.struct.LoadingView
-import lava.core.design.view.struct.StructHost
-import lava.core.design.view.struct.StructView
+import lava.core.design.view.struct.*
 import kotlin.reflect.KClass
 
 abstract class ActivityX : AppCompatActivity(), StructHost {
@@ -31,6 +28,10 @@ abstract class ActivityX : AppCompatActivity(), StructHost {
         setContentView(contentView)
         initView(binding)
         initEvent()
+    }
+
+    override fun <T> onViewStateChanged(state: StructState<T>): T {
+        return null!!
     }
 
     override fun getStructView(): StructView {

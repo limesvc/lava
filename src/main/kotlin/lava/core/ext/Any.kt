@@ -10,11 +10,11 @@ inline fun <T: Any> T?.just(block: T.() -> Unit){
     this?.block()
 }
 
-inline fun <T, R> notNull(t: T?, r: R?, block: Function2<T, R, Unit>) {
+inline fun <T, R> onNotNull(t: T?, r: R?, block: Function2<T, R, Unit>) {
     if (t != null && r != null) block(t, r)
 }
 
-inline fun <T, R, V> notNull(t: T?, r: R?, v: V?, block: Function3<T, R, V, Unit>) {
+inline fun <T, R, V> onNotNull(t: T?, r: R?, v: V?, block: Function3<T, R, V, Unit>) {
     if (t != null && r != null && v != null) block(t, r, v)
 }
 

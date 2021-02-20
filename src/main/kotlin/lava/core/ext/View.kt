@@ -51,8 +51,16 @@ fun View?.hide(){
     }
 }
 
-fun View?.removeFromParent(){
+fun View?.removeFromParent() {
     this?.parent.am<ViewGroup> {
         it.removeView(this)
+    }
+}
+
+fun View?.replaceParent(viewGroup: ViewGroup) {
+    if (this?.parent == viewGroup) return
+    this?.parent.am<ViewGroup> {
+        it.removeView(this)
+        viewGroup.addView(viewGroup)
     }
 }

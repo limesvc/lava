@@ -22,3 +22,9 @@ fun RecyclerView.smoothSnapTo(position: Int, snapMode: Int = LinearSmoothScrolle
     smoothScroller.targetPosition = position
     layoutManager?.startSmoothScroll(smoothScroller)
 }
+
+fun RecyclerView.findFirstView(){
+    layoutManager.am<LinearLayoutManager> {
+        it.findFirstVisibleItemPosition()
+    }
+}
