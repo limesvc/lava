@@ -31,7 +31,7 @@ abstract class ActivityX : AppCompatActivity(), StructHost {
     }
 
     override fun <T> onViewStateChanged(state: StructState<T>): T {
-        return null!!
+        return state.default
     }
 
     override fun getStructView(): StructView {

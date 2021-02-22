@@ -82,7 +82,7 @@ class StickHeadViewX @JvmOverloads constructor(
             curSticker = pre
         } else if (pre == null && next != null && curSticker != null) {
             curSticker?.holder?.itemView?.also {
-                it.top = nextView.top - it.height
+                it.translationY = (nextView.top - it.height).toFloat()
             }
         }
     }
