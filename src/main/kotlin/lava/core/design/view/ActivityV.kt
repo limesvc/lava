@@ -14,7 +14,6 @@ import lava.core.ext.just
 import lava.core.live.flagErrorState
 import lava.core.live.flagLoadingState
 import lava.core.util.getGenericClass
-import java.util.ArrayList
 
 abstract class ActivityV<VM : ViewModelX> : ActivityX() {
     private val vmProvider
