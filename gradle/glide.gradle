@@ -1,5 +1,5 @@
 ext.versions += [
-        glide: '4.11.0'
+        glide: '4.11.0',
 ]
 
 ext.deps += [

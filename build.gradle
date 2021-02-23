@@ -54,6 +54,9 @@ dependencies {
 
     compileOnly deps.androidx.viewpager2
 
+    api deps.kotlin.coroutines.core
+    api deps.kotlin.coroutines.android
+
     api deps.lifecycle.runtime
     api deps.lifecycle.extensions
     api deps.lifecycle.livedata
