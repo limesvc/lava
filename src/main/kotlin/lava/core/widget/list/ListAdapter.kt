@@ -9,7 +9,7 @@ abstract class ListAdapter<DATA, VH : RecyclerView.ViewHolder> : RecyclerView.Ad
     open fun setData(data: List<DATA>?) {
         mData.clear()
         if (data != null) {
-            val success = mData.addAll(data)
+            mData.addAll(data)
         }
         notifyDataSetChanged()
     }

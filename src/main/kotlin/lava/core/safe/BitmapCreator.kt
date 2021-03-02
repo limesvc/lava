@@ -22,7 +22,7 @@ class BitmapCreator {
             val outWidth = options.outWidth
             val outHeight = options.outHeight
             val area = outWidth * outHeight
-            val avail = AppUtil.getAvailMem(appContext) / 4
+            val avail = AppUtil.getAvailMem() / 4
 
             options.inSampleSize = Integer.highestOneBit((area / avail.toFloat()).toInt()).shl(1)
             return options
@@ -60,7 +60,7 @@ class BitmapCreator {
          */
         private fun available(width: Int, height: Int, byteRate: Int = 4): Boolean {
             val needMem = width * height * byteRate
-            val available = AppUtil.getAvailMem(appContext)
+            val available = AppUtil.getAvailMem()
             return needMem < available
         }
     }

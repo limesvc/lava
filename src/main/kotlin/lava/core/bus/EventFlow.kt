@@ -2,15 +2,31 @@ package lava.core.bus
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.launch
 import lava.core.ext.am
 
 /**
- * example:
- * object Bus: LiveBus(){
- *      const val EVENT_X = 0
- * }
+ * Created by svc on 2021/2/23
  */
-abstract class LiveBus {
+
+internal class Box {
+    var next: Box? = null
+    fun onEvent(any: Any?) {}
+}
+
+class EventFlow {
+    private fun test() {
+        val channel = Channel<Event>()
+        GlobalScope.launch {
+            channel.consumeEach {
+
+            }
+        }
+    }
+
     private val live = MutableLiveData<Event>()
 
     fun with(owner: LifecycleOwner): Bus {
@@ -46,10 +62,10 @@ abstract class LiveBus {
     }
 }
 
-class Bus(private val owner: LifecycleOwner, private val live: MutableLiveData<Event>) :
+class FLow(private val owner: LifecycleOwner, private val live: MutableLiveData<Event>) :
     MutableLiveData<Event>() {
 
-    inline fun <reified T> on(flag: Flag<T>, crossinline func: Function1<T, Unit>){
+    inline fun <reified T> on(flag: Flag<T>, crossinline func: Function1<T, Unit>) {
         onAny(flag.flag) { any ->
             any.am<T> {
                 func(it)
@@ -57,7 +73,7 @@ class Bus(private val owner: LifecycleOwner, private val live: MutableLiveData<E
         }
     }
 
-    inline fun <reified T : Any> on(flag: Int, crossinline func: Function1<T, Unit>): Bus {
+    inline fun <reified T : Any> on(flag: Int, crossinline func: Function1<T, Unit>): FLow {
         onAny(flag) { any ->
             any.am<T> {
                 func(it)
@@ -66,7 +82,7 @@ class Bus(private val owner: LifecycleOwner, private val live: MutableLiveData<E
         return this
     }
 
-    fun on(flag: Int, func: Function0<Unit>): Bus {
+    fun on(flag: Int, func: Function0<Unit>): FLow {
         live.observe(owner) {
             if (it.flag == flag) {
                 func()
@@ -79,7 +95,7 @@ class Bus(private val owner: LifecycleOwner, private val live: MutableLiveData<E
     /**
      * 除非确定要做一个可变类型参数，否则不要使用这个方法
      */
-    fun onAny(flag: Int, func: Function1<Any?, Unit>): Bus {
+    fun onAny(flag: Int, func: Function1<Any?, Unit>): FLow {
         live.observe(owner) {
             if (it.flag == flag) {
                 func(it.any)

@@ -18,7 +18,7 @@ interface StructHost {
     fun getStructView(): StructView
     fun binding(): ViewDataBinding
     fun onSetup(contentView: View, binding: ViewDataBinding)
-    fun <T> onViewStateChanged(state: StructState<T>): T
+    fun <T> onViewStateChanged(state: StructState<T>) = state.default
 }
 
 interface StructView {
@@ -29,7 +29,7 @@ interface StructView {
     }
 
     fun build(host: StructHost): View {
-        return this[DecorStruct]?.install(this, host)!!
+        return this[DecorStruct]!!.install(this, host)
     }
 
     fun onLifeCycleChanged(event: Lifecycle.Event) {}

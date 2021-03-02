@@ -30,10 +30,6 @@ abstract class ActivityX : AppCompatActivity(), StructHost {
         initEvent()
     }
 
-    override fun <T> onViewStateChanged(state: StructState<T>): T {
-        return state.default
-    }
-
     override fun getStructView(): StructView {
         return DecorView() + LoadingView()
     }
