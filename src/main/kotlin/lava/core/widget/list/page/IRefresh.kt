@@ -1,5 +1,6 @@
 package lava.core.widget.list.page
 
+import lava.core.design.view.struct.StructState
 import lava.core.net.LoadingState
 import lava.core.type.Block
 
@@ -24,4 +25,13 @@ interface ILoadingView : ILoader {
 
 interface IErrorView : ILoader {
     fun onRetry(block: Block)
+}
+
+interface IDecorView : ILoader {
+    fun onStart(block: Block)
+}
+
+interface IVMPlugin {
+    fun handled() = true
+    fun <T> onViewStateChange(state: StructState<T>)
 }

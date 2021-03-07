@@ -1,14 +1,9 @@
 package lava.core.design.view.struct
 
 import android.content.Context
-import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
-import lava.core.ext.just
 import lava.core.obj.UNCHECKED_CAST
-import lava.core.util.LPUtil
 
 abstract class DecorStructX : DecorStruct {
     override fun <T> get(struct: Struct<T>): T? {

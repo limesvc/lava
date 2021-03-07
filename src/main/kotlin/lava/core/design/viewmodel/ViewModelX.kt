@@ -2,12 +2,17 @@ package lava.core.design.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import lava.core.bus.*
-import lava.core.design.view.struct.*
+import lava.core.bus.Flag
+import lava.core.bus.LiveBus
+import lava.core.bus.VMBus
+import lava.core.design.view.struct.StructState
+import lava.core.ext.just
 import lava.core.obj.UNCHECKED_CAST
+import lava.core.widget.list.page.IVMPlugin
 
 abstract class ViewModelX : ViewModel() {
     private val bucket by lazy { mutableMapOf<String, Any>() }
+    private val structStateMap by lazy { mutableMapOf<StructState<*>, MutableList<IVMPlugin>>() }
 
     private val bus = VMBus()
 
@@ -48,26 +53,41 @@ abstract class ViewModelX : ViewModel() {
         return bucket[key] as? T
     }
 
+    fun <T> registerPlugin(state: StructState<T>, plugin: IVMPlugin) {
+        var list = structStateMap[state]
+        if (list == null) {
+            list = mutableListOf()
+            structStateMap[state] = list
+        }
+        list.add(plugin)
+    }
+
     fun <T> onViewStateChanged(state: StructState<T>): T {
         @Suppress(UNCHECKED_CAST)
-        when (state) {
-            is OnCreate -> Unit
-            is OnLoaded -> onStart()
-            is OnRetry -> onRetry()
-            is OnBackPressed -> return onBackPressed() as T
+        structStateMap[state]?.just {
+            if (state.default == Unit) {
+                for (plugin in this) {
+                    plugin.onViewStateChange(state)
+                }
+            } else {
+                val plugin = firstOrNull { it.handled() }
+                if (plugin != null) {
+                    return plugin.onViewStateChange(state) as T
+                }
+            }
         }
 
         return state.default
     }
 
+    open fun onInit() {}
+
     open fun onStart() {}
 
-    open fun onRetry() {}
-
     /**
-     * return intercept or not
+     * return can return or not
      */
     open fun onBackPressed(): Boolean {
-        return false
+        return true
     }
 }

@@ -83,8 +83,8 @@ class Bus(private val owner: LifecycleOwner, private val live: MutableLiveData<E
         live.observe(owner) {
             if (it.flag == flag) {
                 func(it.any)
+                it.recycle()
             }
-            it.recycle()
         }
         return this
     }

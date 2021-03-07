@@ -1,14 +1,16 @@
 package lava.core.live
 
 import lava.core.bus.Flag
-import lava.core.design.view.struct.ErrorStruct
-import lava.core.design.view.struct.LoadingStruct
-import lava.core.design.view.struct.StructStatus
+import lava.core.design.view.struct.OnLoaded
+import lava.core.design.view.struct.OnRetry
+import lava.core.design.view.struct.StructState
 import lava.core.design.viewmodel.ViewModelX
 import lava.core.net.LoadingState
 import lava.core.type.Block
+import lava.core.widget.list.page.IDecorView
 import lava.core.widget.list.page.IErrorView
 import lava.core.widget.list.page.ILoadingView
+import lava.core.widget.list.page.IVMPlugin
 
 /**
  * Created by svc on 2021/1/28
@@ -43,12 +45,52 @@ val ViewModelX.flagErrorState: Flag<LoadingState>
 
 val ViewModelX.errorPlugin: IErrorView
     get() = getOrCreate(VM_ERROR_PLUGIN) {
-        object : IErrorView {
+        object : IErrorView, IVMPlugin {
+            init {
+                registerPlugin(OnRetry, this)
+            }
+
+            private var block: Block? = null
             override fun onRetry(block: Block) {
+                this.block = block
             }
 
             override fun updateState(state: LoadingState) {
                 sendUI(flagErrorState.flag, state)
+            }
+
+            override fun <T> onViewStateChange(state: StructState<T>) {
+                block?.invoke()
+            }
+        }
+    }
+
+const val VM_DECOR_PLUGIN = "lava.core.live.vm_decor_plugin"
+const val VM_DECOR_FLAG = "lava.core.live.vm_decor_flag"
+
+val ViewModelX.flagDecorState: Flag<LoadingState>
+    get() = getOrCreate(VM_DECOR_FLAG) {
+        Flag(-1002)
+    }
+
+val ViewModelX.decorPlugin: IDecorView
+    get() = getOrCreate(VM_DECOR_PLUGIN) {
+        object : IDecorView, IVMPlugin {
+            init {
+                registerPlugin(OnLoaded, this)
+            }
+
+            private var block: Block? = null
+            override fun onStart(block: Block) {
+                this.block = block
+            }
+
+            override fun updateState(state: LoadingState) {
+                sendUI(flagDecorState.flag, state)
+            }
+
+            override fun <T> onViewStateChange(state: StructState<T>) {
+                block?.invoke()
             }
         }
     }

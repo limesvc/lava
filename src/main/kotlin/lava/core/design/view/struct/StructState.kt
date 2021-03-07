@@ -5,10 +5,10 @@ package lava.core.design.view.struct
  */
 sealed class StructState<T>(val default: T)
 
-object OnCreate : StructState<String>("")
+object OnCreate : StructState<Unit>(Unit)
 
-object OnLoaded : StructState<String>("")
+object OnLoaded : StructState<Unit>(Unit)
 
-object OnRetry : StructState<String>("")
+object OnRetry : StructState<Unit>(Unit)
 
-object OnBackPressed : StructState<Boolean>(false)
+object OnBackPressed : StructState<Boolean>(true)

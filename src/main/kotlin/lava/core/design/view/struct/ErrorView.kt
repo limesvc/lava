@@ -7,8 +7,10 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import lava.core.ext.inflater
+import lava.core.net.LoadingState
 import lava.core.util.LPUtil
 
 /**
@@ -18,7 +20,7 @@ class ErrorView: ErrorStructX() {
     private var layout: LinearLayout? = null
     private var layoutId: Int = 0
 
-    override fun getView(context: Context): View {
+    override fun getView(context: Context, host: StructHost): View {
         return layout ?: LinearLayout(context).apply {
             if (layoutId != 0) {
                 inflater.inflate(layoutId, this, true)
@@ -43,5 +45,9 @@ class ErrorView: ErrorStructX() {
 
     fun setLayoutId(layout: Int) {
         layoutId = layout
+    }
+
+    override fun updateState(state: LoadingState) {
+        layout?.isVisible = state == LoadingState.ERROR
     }
 }

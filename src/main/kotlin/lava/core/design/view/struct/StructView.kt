@@ -1,7 +1,6 @@
 package lava.core.design.view.struct
 
 import android.content.Context
-import android.view.DragEvent
 import android.view.View
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Lifecycle
@@ -32,11 +31,9 @@ interface StructView {
         return this[DecorStruct]!!.install(this, host)
     }
 
-    fun onLifeCycleChanged(event: Lifecycle.Event) {}
+    fun updateState(state: LoadingState)
 
-    fun updateState(state: LoadingState) {}
-
-    fun getView(context: Context): View
+    fun getView(context: Context, host: StructHost): View
 }
 
 interface DecorStruct : StructView {
@@ -65,7 +62,9 @@ class LinkStruct(private val stuff: StructView, private val next: StructView) : 
         return stuff[struct] ?: next[struct]
     }
 
-    override fun getView(context: Context): View {
-        return stuff.getView(context)
+    override fun getView(context: Context, host: StructHost): View {
+        return stuff.getView(context, host)
     }
+
+    override fun updateState(state: LoadingState) {}
 }

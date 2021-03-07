@@ -11,13 +11,14 @@ class Event private constructor(var flag: Int, var any: Any? = null) {
         @Synchronized
         internal fun obtain(flag: Int, any: Any? = null): Event {
             val event = pool
-            if (event != null) {
-                pool = event.next
-                event.any = null
-                poolSize--
-                return event
-            }
-            L.d("pool out of cache")
+//            if (event != null) {
+//                pool = event.next
+//                event.any = any
+//                event.flag = flag
+//                poolSize--
+//                return event
+//            }
+            L.d("Event pool out of cache")
             return Event(flag, any)
         }
     }

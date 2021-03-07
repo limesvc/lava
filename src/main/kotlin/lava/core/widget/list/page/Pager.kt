@@ -1,12 +1,18 @@
 package lava.core.widget.list.page
 
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import lava.core.design.viewmodel.ViewModelX
 import lava.core.ext.launchIO
 import lava.core.ext.launchMain
 import lava.core.live.LiveBinding
+import lava.core.live.decorPlugin
+import lava.core.live.errorPlugin
+import lava.core.live.loadingPlugin
 import lava.core.net.LoadingState
 import logger.L
 
@@ -25,7 +31,7 @@ abstract class LivePagerX<DATA>(protected var page: Int, protected var size: Int
     private var scope: CoroutineScope? = null
     private var loadingJob: Job? = null
 
-//    private var loadMorePlugin: ILoadMore? = null
+    //    private var loadMorePlugin: ILoadMore? = null
 //    private var refreshPlugin: IRefresh? = null
     private var layerPlugin: ILoadingView? = null
     private var errorPlugin: IErrorView? = null
@@ -44,32 +50,53 @@ abstract class LivePagerX<DATA>(protected var page: Int, protected var size: Int
         onChange?.invoke(value)
     }
 
-    fun attach(plugin: ILoadMore) {
+    fun attach(plugin: ILoadMore): LivePagerX<DATA> {
         plugin.onLoadMore {
             curLoader = plugin
             nextPage()
         }
+        return this
     }
 
-    fun attach(plugin: IRefresh) {
+    fun attach(plugin: IRefresh): LivePagerX<DATA> {
         plugin.onRefresh {
             curLoader = plugin
             refresh()
         }
+        return this
     }
 
-    fun attach(plugin: ILoadingView) {
+    fun attach(plugin: ILoadingView): LivePagerX<DATA> {
         layerPlugin = plugin
         plugin.onCancel {
             curLoader = plugin
             loadingJob?.cancel()
         }
+        return this
     }
 
-    fun attach(plugin: IErrorView) {
+    fun attach(plugin: IErrorView): LivePagerX<DATA> {
+        errorPlugin = plugin
         plugin.onRetry {
             curLoader = plugin
+            doRequest()
         }
+        return this
+    }
+
+    fun attach(plugin: IDecorView): LivePagerX<DATA> {
+        plugin.onStart {
+            curLoader = plugin
+            nextPage()
+        }
+        return this
+    }
+
+    fun attach(vm: ViewModelX): LivePagerX<DATA> {
+        attach(vm.loadingPlugin)
+        attach(vm.errorPlugin)
+        attach(vm.decorPlugin)
+        return this
     }
 
     open fun reset() {
@@ -93,6 +120,7 @@ abstract class LivePagerX<DATA>(protected var page: Int, protected var size: Int
     private fun doRequest() {
         updateState(LoadingState.LOADING)
         loadingJob = scope?.launchIO {
+            delay(2000)
             kotlin.runCatching {
                 val input = dataRequest?.invoke(page, size) ?: asyncDataRequest?.invoke(page, size)
                 setup(input)
@@ -112,7 +140,6 @@ abstract class LivePagerX<DATA>(protected var page: Int, protected var size: Int
                     updateState(LoadingState.DONE)
                 } else {
                     updateState(LoadingState.READY)
-                    page++
                 }
             } else {
                 updateState(LoadingState.ERROR)
@@ -124,14 +151,15 @@ abstract class LivePagerX<DATA>(protected var page: Int, protected var size: Int
 
     private fun updateState(state: LoadingState) {
         this.state = state
-        if (curLoader != null) {
-            scope?.launchMain {
-                if (page == 1) {
-                    layerPlugin?.updateState(state)
-                    errorPlugin?.updateState(state)
-                } else {
-                    curLoader?.updateState(state)
-                }
+        scope?.launchMain {
+            if (page == 1) {
+                layerPlugin?.updateState(state)
+                errorPlugin?.updateState(state)
+            } else {
+                curLoader?.updateState(state)
+            }
+            if (state == LoadingState.READY) {
+                page++
             }
         }
     }
