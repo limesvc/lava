@@ -10,6 +10,7 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import lava.core.net.LoadingState
 import lava.core.util.LPUtil
 import lava.core.util.MATCH
+import lava.core.util.dp
 
 class LoadingFooterM @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -20,7 +21,7 @@ class LoadingFooterM @JvmOverloads constructor(
     init {
         val progressDrawable = CircularProgressDrawable(context)
         imageView.setImageDrawable(progressDrawable)
-        addView(imageView, LPUtil.viewGroup(MATCH, 36))
+        addView(imageView, LPUtil.viewGroup(MATCH, 36.dp()))
         textView.gravity = Gravity.CENTER
         textView.setTextColor(Color.BLACK)
 

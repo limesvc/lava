@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.view.View
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import lava.core.R
@@ -13,13 +12,14 @@ import lava.core.ext.gone
 import lava.core.ext.just
 import lava.core.net.LoadingState
 import lava.core.util.LPUtil
-import lava.core.widget.list.page.IDecorView
+import lava.core.util.dp
 
 
 class DecorView: DecorStructX() {
     private var layout: ConstraintLayout? = null
     private lateinit var host: StructHost
     private var contentView: View? = null
+    private var notLoad = true
 
     override fun install(struct: StructView, host: StructHost): View {
         this.host = host
@@ -32,7 +32,7 @@ class DecorView: DecorStructX() {
         var titleExist = false
         struct[TitleStruct]?.just {
             titleExist = true
-            val constraint = LPUtil.constraint(height = 48)
+            val constraint = LPUtil.constraint(height = 48.dp())
             constraint.startToStart = R.id.parent
             constraint.topToTop = R.id.parent
             val view = getView(context, host)
@@ -77,9 +77,10 @@ class DecorView: DecorStructX() {
     }
 
     override fun onLifeCycleEvent(event: Lifecycle.Event) {
-        if (event == Lifecycle.Event.ON_RESUME) {
+        if (event == Lifecycle.Event.ON_RESUME && notLoad) {
             // too lazy to impl lazy mode
             host.onViewStateChanged(OnLoaded)
+            notLoad = false
         }
     }
 

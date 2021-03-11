@@ -12,6 +12,7 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import lava.core.ext.inflater
 import lava.core.net.LoadingState
 import lava.core.util.LPUtil
+import lava.core.util.dp
 
 /**
  * Created by svc on 2021/2/12
@@ -19,6 +20,8 @@ import lava.core.util.LPUtil
 class ErrorView: ErrorStructX() {
     private var layout: LinearLayout? = null
     private var layoutId: Int = 0
+
+    private val size = 36.dp()
 
     override fun getView(context: Context, host: StructHost): View {
         return layout ?: LinearLayout(context).apply {
@@ -32,7 +35,7 @@ class ErrorView: ErrorStructX() {
 
                 val progressDrawable = CircularProgressDrawable(context)
                 imageView.setImageDrawable(progressDrawable)
-                addView(imageView, LPUtil.viewGroup(36, 36))
+                addView(imageView, LPUtil.viewGroup(size, size))
                 textView.gravity = Gravity.CENTER
                 textView.setTextColor(Color.BLACK)
 
