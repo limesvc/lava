@@ -2,19 +2,27 @@ package lava.core.design.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.*
 import lava.core.bus.Flag
 import lava.core.bus.LiveBus
 import lava.core.bus.VMBus
+import lava.core.design.view.struct.OnBackPressed
 import lava.core.design.view.struct.StructState
 import lava.core.ext.just
+import lava.core.ext.launchMain
+import lava.core.net.LoadingState
 import lava.core.obj.UNCHECKED_CAST
 import lava.core.widget.list.page.IVMPlugin
+import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 abstract class ViewModelX : ViewModel() {
     private val bucket by lazy { mutableMapOf<String, Any>() }
     private val structStateMap by lazy { mutableMapOf<StructState<*>, MutableList<IVMPlugin>>() }
 
     private val bus = VMBus()
+
+    private val loadingStack by lazy { Stack<Job>() }
 
     protected infix fun <T> Flag<T>.set(value: T) {
         viewModelScope
@@ -63,7 +71,6 @@ abstract class ViewModelX : ViewModel() {
     }
 
     fun <T> onViewStateChanged(state: StructState<T>): T {
-        @Suppress(UNCHECKED_CAST)
         structStateMap[state]?.just {
             if (state.default == Unit) {
                 for (plugin in this) {
@@ -72,9 +79,15 @@ abstract class ViewModelX : ViewModel() {
             } else {
                 val plugin = firstOrNull { it.handled() }
                 if (plugin != null) {
+                    @Suppress(UNCHECKED_CAST)
                     return plugin.onViewStateChange(state) as T
                 }
             }
+        }
+
+        if (state == OnBackPressed) {
+            @Suppress(UNCHECKED_CAST)
+            return onBackPressed() as T
         }
 
         return state.default
@@ -88,6 +101,39 @@ abstract class ViewModelX : ViewModel() {
      * return can return or not
      */
     open fun onBackPressed(): Boolean {
+        if (loadingStack.isNotEmpty()) {
+            loadingStack.pop()?.cancel(LoadCancelException(""))
+            return false
+        }
         return true
+    }
+
+    protected fun load(
+        context: CoroutineContext = Dispatchers.IO,
+        start: CoroutineStart = CoroutineStart.DEFAULT,
+        onCancelState: LoadingState = LoadingState.READY,
+        block: suspend CoroutineScope.() -> Unit
+    ): Job {
+        asLoading()
+        val task = viewModelScope.launch(context, start) {
+            kotlin.runCatching {
+                this.block()
+                withContext(Dispatchers.Main) { asLoaded() }
+            }.onFailure {
+                it.printStackTrace()
+                withContext(Dispatchers.Main) { asError() }
+            }
+        }
+        task.invokeOnCompletion {
+            viewModelScope.launchMain {
+                if (it is LoadCancelException) {
+                    onState(onCancelState)
+                } else {
+                    it?.printStackTrace()
+                }
+            }
+        }
+        loadingStack.add(task)
+        return task
     }
 }

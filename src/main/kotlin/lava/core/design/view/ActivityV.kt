@@ -8,7 +8,6 @@ import lava.core.bus.Bus
 import lava.core.bus.LiveBus
 import lava.core.design.view.struct.*
 import lava.core.design.viewmodel.ViewModelX
-import lava.core.ext.just
 import lava.core.live.flagDecorState
 import lava.core.live.flagErrorState
 import lava.core.live.flagLoadingState
@@ -19,6 +18,8 @@ abstract class ActivityV<VM : ViewModelX> : ActivityX() {
         get() = ViewModelProvider(this, defaultViewModelProviderFactory)
 
     lateinit var vm: VM
+
+    protected open val enableLoad = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         @Suppress("UNCHECKED_CAST")
@@ -34,22 +35,16 @@ abstract class ActivityV<VM : ViewModelX> : ActivityX() {
     }
 
     protected open fun Bus.bindStruct() {
-        struct[DecorStruct]?.just {
-            on(vm.flagDecorState) {
-                updateState(it)
-            }
+        on(vm.flagDecorState) {
+            struct[DecorStruct]?.updateState(it)
         }
 
-        struct[LoadingStruct]?.just {
-            on(vm.flagLoadingState) {
-                updateState(it)
-            }
+        on(vm.flagLoadingState) {
+            struct[LoadingStruct]?.updateState(it)
         }
 
-        struct[ErrorStruct]?.just {
-            on(vm.flagErrorState) {
-                updateState(it)
-            }
+        on(vm.flagErrorState) {
+            struct[ErrorStruct]?.updateState(it)
         }
     }
 
@@ -64,7 +59,7 @@ abstract class ActivityV<VM : ViewModelX> : ActivityX() {
     }
 
     private fun LiveBus.bindVM() {
-        with(this@ActivityV).bindStruct()
+        if (enableLoad) with(this@ActivityV).bindStruct()
         with(this@ActivityV).linkVMLive()
     }
 

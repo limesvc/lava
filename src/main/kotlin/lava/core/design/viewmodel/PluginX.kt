@@ -33,3 +33,9 @@ fun ViewModelX.asError() {
     decorPlugin.updateState(LoadingState.ERROR)
     loadingPlugin.updateState(LoadingState.ERROR)
 }
+
+internal fun ViewModelX.onState(state: LoadingState) {
+    errorPlugin.updateState(state)
+    decorPlugin.updateState(state)
+    loadingPlugin.updateState(state)
+}

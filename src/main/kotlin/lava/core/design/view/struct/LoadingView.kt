@@ -1,6 +1,8 @@
 package lava.core.design.view.struct
 
 import android.content.Context
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
@@ -8,6 +10,7 @@ import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import lava.core.R
+import lava.core.ext.just
 import lava.core.net.LoadingState
 import lava.core.util.LPUtil
 import lava.core.util.dp
@@ -25,18 +28,18 @@ class LoadingView : LoadingStructX() {
     override fun getView(context: Context, host: StructHost): View {
         return layout ?: FrameLayout(context).apply {
             val progressBar = ProgressBar(context)
-//            progressBar.indeterminateDrawable?.just {
-//                colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_OUT)
-//            }
-//            progressBar.progressDrawable?.just {
-//                colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.SRC_OUT)
-//            }
+            progressBar.indeterminateDrawable?.just {
+                colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY)
+            }
+            progressBar.progressDrawable?.just {
+                colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY)
+            }
 
             val frame = LPUtil.frame(size, size)
             frame.gravity = Gravity.CENTER
             addView(progressBar, frame)
             setBackgroundColor(ContextCompat.getColor(context, R.color.mask_gray))
-//            setOnClickListener { }
+            setOnClickListener { }
 
             layout = this
         }
