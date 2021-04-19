@@ -2,6 +2,7 @@ package lava.core.design.view.struct
 
 import android.content.Context
 import android.view.View
+import androidx.annotation.ColorInt
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Lifecycle
 import lava.core.net.LoadingState
@@ -42,6 +43,8 @@ interface DecorStruct : StructView {
     fun install(struct: StructView, host: StructHost): View
 
     fun onLifeCycleEvent(event: Lifecycle.Event) {}
+
+    fun setBackgroundColor(@ColorInt color: Int)
 }
 
 interface ErrorStruct : StructView {

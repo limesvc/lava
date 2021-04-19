@@ -85,9 +85,11 @@ class DecorView: DecorStructX() {
     }
 
     override fun getView(context: Context, host: StructHost): ConstraintLayout {
-        return layout ?: ConstraintLayout(context).apply {
-            setBackgroundColor(Color.parseColor("#2f2f2f"))
-        }
+        return layout ?: ConstraintLayout(context)
+    }
+
+    override fun setBackgroundColor(color: Int) {
+        layout?.setBackgroundColor(color)
     }
 
     override fun updateState(state: LoadingState) {

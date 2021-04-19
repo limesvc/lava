@@ -1,8 +1,10 @@
 package lava.core.binding
 
 import androidx.databinding.BindingAdapter
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import lava.core.ext.getLifeCycleOwner
 import lava.core.widget.list.ListAdapterX
 import lava.core.widget.list.ListViewX
 import lava.core.widget.list.footer.LoadingFooter
@@ -62,12 +64,13 @@ fun <T, V : ListAdapterX<T, *>> bindListView(
     pager?.also {
         val plugin = footer ?: LoadingFooterM(listView.context)
         listView.initLoadMore(plugin)
-        pager.attach(plugin)
-        pager.attach(listView)
-        pager.observeOnce {
-            curAdapter?.setData(it)
-        }
-    }
+        it.attach(plugin)
+        it.attach(listView)
+    }?.observe({
+        listView.getLifeCycleOwner()
+    }, Observer {
+        curAdapter?.setData(it)
+    })
 
     refresh?.also { listView.setOnRefreshListener(it) }
 }

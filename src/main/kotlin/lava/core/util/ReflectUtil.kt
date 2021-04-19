@@ -2,6 +2,7 @@
 
 package lava.core.util
 
+import android.app.Activity
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
@@ -12,4 +13,9 @@ fun getGenericClass(clazz: Class<*>): Type {
     }
     val typeList = superclass as ParameterizedType
     return typeList.actualTypeArguments[0]
+}
+
+fun inject(activity: Activity) {
+    val hostClass = Class.forName(activity.javaClass.name.plus("CreatorKT"))
+    hostClass.getMethod("inject", hostClass).invoke(activity)
 }

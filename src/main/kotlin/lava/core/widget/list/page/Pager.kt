@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import lava.core.design.viewmodel.ViewModelX
+import lava.core.ext.just
 import lava.core.ext.launchIO
 import lava.core.ext.launchMain
 import lava.core.live.LiveBinding
@@ -38,16 +39,12 @@ abstract class LivePagerX<DATA>(protected var page: Int, protected var size: Int
 
     private var curLoader: ILoader? = null
 
-    private var onChange: LiveObserve<List<DATA>>? = null
+    private var value = mutableListOf<DATA>()
 
     override fun onLifeCycleChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         if (Lifecycle.Event.ON_DESTROY == event) {
             loadingJob?.cancel()
         }
-    }
-
-    override fun onChanged(value: List<DATA>) {
-        onChange?.invoke(value)
     }
 
     fun attach(plugin: ILoadMore): LivePagerX<DATA> {
@@ -113,14 +110,9 @@ abstract class LivePagerX<DATA>(protected var page: Int, protected var size: Int
         return this
     }
 
-    fun observeOnce(observer: LiveObserve<List<DATA>>) {
-        onChange = observer
-    }
-
     private fun doRequest() {
         updateState(LoadingState.LOADING)
         loadingJob = scope?.launchIO {
-            delay(2000)
             kotlin.runCatching {
                 val input = dataRequest?.invoke(page, size) ?: asyncDataRequest?.invoke(page, size)
                 setup(input)
@@ -135,7 +127,8 @@ abstract class LivePagerX<DATA>(protected var page: Int, protected var size: Int
         if (input != null) {
             val rsp = parse(input)
             if (rsp.success) {
-                postValue(rsp.list)
+                rsp.list.just { value.addAll(this) }
+                postValue(value)
                 if (rsp.list.isNullOrEmpty() || rsp.list.size < size) {
                     updateState(LoadingState.DONE)
                 } else {

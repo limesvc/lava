@@ -3,6 +3,9 @@ package lava.core.ext
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import lava.core.R
 
 val View.inflater: LayoutInflater
@@ -63,4 +66,12 @@ fun View?.replaceParent(viewGroup: ViewGroup) {
         it.removeView(this)
         viewGroup.addView(viewGroup)
     }
+}
+
+fun ViewGroup.addView(@LayoutRes layout: Int) {
+    inflater.inflate(layout, this)
+}
+
+fun View.getLifeCycleOwner(): LifecycleOwner {
+    return findViewTreeLifecycleOwner() ?: context as LifecycleOwner
 }
