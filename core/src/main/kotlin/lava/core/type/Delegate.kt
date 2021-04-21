@@ -1,7 +1,6 @@
 package lava.core.type
 
 import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KFunction
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty
 

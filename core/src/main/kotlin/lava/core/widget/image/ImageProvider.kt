@@ -5,8 +5,6 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
-import java.io.File
-import java.io.FileDescriptor
 
 /**
  * Created by svc on 2021/1/26

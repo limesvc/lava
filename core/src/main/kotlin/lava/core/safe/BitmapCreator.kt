@@ -3,7 +3,6 @@ package lava.core.safe
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import lava.core.appContext
 import lava.core.util.AppUtil
 
 /**

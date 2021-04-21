@@ -1,5 +1,6 @@
 package lava.core.ext
 
+import android.os.SystemClock
 import kotlinx.coroutines.*
 import lava.core.type.Block
 
@@ -18,11 +19,21 @@ fun afterOnUI(millis: Long, block: Block): Job {
     }
 }
 
-fun interval(millis: Long, block: Block): Job {
+fun interval(interval: Long, block: Block): Job {
     return GlobalScope.launch {
+        var start = SystemClock.elapsedRealtime()
+        var last = start
+        var nextTick = 0L
+        var offset = 0L
+        var now = 0L
         while (true) {
+            now = SystemClock.elapsedRealtime()
+            offset = now - last
+            nextTick = interval - offset % interval
+            last = now
+
             block()
-            delay(millis)
+            delay(nextTick)
         }
     }
 }

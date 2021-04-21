@@ -67,6 +67,8 @@ dependencies {
     api deps.androidx.swiperefreshlayout
     api deps.androidx.constraint
 
+    implementation project(':compiler')
+
     implementation(deps.glide.runtime) {
         exclude group: "com.android.support"
     }

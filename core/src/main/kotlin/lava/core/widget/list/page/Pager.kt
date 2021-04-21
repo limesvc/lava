@@ -5,7 +5,6 @@ import androidx.lifecycle.LifecycleOwner
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import lava.core.design.viewmodel.ViewModelX
 import lava.core.ext.just
 import lava.core.ext.launchIO

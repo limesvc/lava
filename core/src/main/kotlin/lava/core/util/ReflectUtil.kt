@@ -3,6 +3,7 @@
 package lava.core.util
 
 import android.app.Activity
+import lava.core.compiler.Creator
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
@@ -16,6 +17,8 @@ fun getGenericClass(clazz: Class<*>): Type {
 }
 
 fun inject(activity: Activity) {
-    val hostClass = Class.forName(activity.javaClass.name.plus("CreatorKT"))
-    hostClass.getMethod("inject", hostClass).invoke(activity)
+    if (activity.javaClass.getAnnotation(Creator::class.java) != null) {
+        val hostClass = Class.forName(activity.javaClass.name.plus("CreatorKT"))
+        hostClass.getMethod("inject", hostClass).invoke(activity)
+    }
 }
