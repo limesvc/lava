@@ -18,7 +18,8 @@ fun getGenericClass(clazz: Class<*>): Type {
 
 fun inject(activity: Activity) {
     if (activity.javaClass.getAnnotation(Creator::class.java) != null) {
-        val hostClass = Class.forName(activity.javaClass.name.plus("CreatorKT"))
-        hostClass.getMethod("inject", hostClass).invoke(activity)
+        val creatorPkg = activity.javaClass.`package`?.name.plus(".creator.")
+        val hostClass = Class.forName(creatorPkg.plus(activity.javaClass.simpleName).plus("CreatorKt"))
+        hostClass.getMethod("inject", activity.javaClass).invoke(null, activity)
     }
 }
