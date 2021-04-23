@@ -10,7 +10,6 @@ import com.squareup.kotlinpoet.*
 /**
  * Created by svc on 2021/4/13
  */
-
 internal class CreatorProcessor : BaseProcessor() {
     companion object {
         const val CREATOR_CLASS = "lava.core.compiler.Creator"
@@ -42,68 +41,17 @@ internal class CreatorProcessor : BaseProcessor() {
                 val className = ksClass.simpleName.asString()
                 val builderName = className.plus("Creator")
 
-                val creatorPkg = packageName.plus(".creator")
-                val fileSpec = FileSpec.builder(creatorPkg, builderName)
+                val fileSpec = FileSpec.builder(packageName, builderName)
                     .addImport(ClassName(packageName, className), "")
+                    .addImport(ClassName("lava.core", "appContext"), "")
                     .addImport(Cast, "")
-                    .addType(buildInterfaceCreator(className, creatorPkg, optionalList))
-                    .addFunction(buildConstructor(className, creatorPkg, requireList, optionalList))
-                    .addFunction(buildActivityInject(className, requireList, optionalList))
+                    .addFunction(buildConstructor(className, packageName, requireList, optionalList))
+                    .addFunction(buildActivityInject(ClassName(packageName, className), requireList, optionalList))
                     .build()
 
-                export(fileSpec, ksClass.containingFile!!, creatorPkg, builderName)
+                export(fileSpec, ksClass.containingFile!!, packageName, builderName)
             }
         return ret
-    }
-
-    private fun buildInterfaceCreator(name: String, packageName: String, paramsList: List<KSPropertyDeclaration>): TypeSpec {
-        val interfaceName = name.filter { it.isUpperCase() }.plus("Creator")
-        val builder = TypeSpec.interfaceBuilder(interfaceName)
-        paramsList.forEach {
-            builder.addFunction(
-                FunSpec.builder(it.name)
-                    .addModifiers(KModifier.ABSTRACT)
-                    .addParameter(it.name, it.type.asClassName())
-                    .returns(ClassName(packageName, interfaceName))
-                    .build()
-            )
-        }
-        builder.addFunction(
-            FunSpec.builder("start")
-                .addModifiers(KModifier.ABSTRACT)
-                .addParameter("context", Context)
-                .build()
-        )
-        return builder.build()
-    }
-
-    private fun buildCreatorImpl(name: String, packageName: String, paramsList: List<KSPropertyDeclaration>): TypeSpec {
-        val interfaceName = name.filter { it.isUpperCase() }.plus("Creator")
-        val builder = TypeSpec.anonymousClassBuilder().addSuperinterface(ClassName(packageName, interfaceName))
-        paramsList.forEach {
-            builder.addFunction(
-                FunSpec.builder(it.name)
-                    .addModifiers(KModifier.OVERRIDE)
-                    .addParameter(it.name, it.type.asClassName())
-                    .addStatement("intent.putExtra(%S, %N)", it.name, it.name)
-                    .addStatement("return this")
-                    .returns(ClassName(packageName, interfaceName))
-                    .build()
-            )
-        }
-
-        builder.addFunction(
-            FunSpec.builder("start")
-                .addModifiers(KModifier.OVERRIDE)
-                .addParameter("context", Context)
-                .addStatement("intent.setClass(context, %T::class.java)", ClassName(packageName, name))
-                .beginControlFlow("if (context !is %T) {", Activity)
-                .addStatement("intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)")
-                .endControlFlow()
-                .addStatement("context.startActivity(intent)")
-                .build()
-        )
-        return builder.build()
     }
 
     private fun buildConstructor(
@@ -111,48 +59,41 @@ internal class CreatorProcessor : BaseProcessor() {
         requireList: List<KSPropertyDeclaration>,
         optionList: List<KSPropertyDeclaration>
     ): FunSpec {
-        val interfaceName = className.filter { it.isUpperCase() }.plus("Creator")
         val construct = FunSpec.builder(className)
             .addAnnotation(
                 AnnotationSpec.builder(Source::class)
-                    .addMember("%T::class", ClassName("", className))
+                    .addMember("%T::class", ClassName(packageName, className))
                     .build()
             )
-            .returns(ClassName(packageName, interfaceName))
+            .returns(Intent)
             .addStatement("val intent = %T()", Intent)
+            .addStatement("intent.setClassName(appContext.packageName, %S)", packageName.plus(".").plus(className))
 
         requireList.forEach {
             construct.addParameter(it.name, it.type.asClassName())
             construct.addStatement("intent.putExtra(%S, %N)", it.name, it.name)
         }
 
-        return construct.addStatement("val creator = %L", buildCreatorImpl(className, packageName, optionList))
-            .addStatement("return creator")
-            .build()
+        optionList.forEach {
+            construct.addParameter(ParameterSpec.builder(it.name, it.type.asClassName().copy(true))
+                .defaultValue("null")
+                .build())
+            construct.beginControlFlow("if (%N != null)", it.name)
+                .addStatement("intent.putExtra(%S, %N)", it.name, it.name)
+                .endControlFlow()
+        }
+
+        return construct.addStatement("return intent").build()
     }
 
     private fun buildActivityInject(
-        className: String,
+        className: ClassName,
         requireList: List<KSPropertyDeclaration>,
         optionList: List<KSPropertyDeclaration>
     ): FunSpec {
-        val activityClass = ClassName("", className)
         val builder = FunSpec.builder("inject")
-        builder.addParameter("host", activityClass)
+        builder.addParameter("host", className)
             .addStatement("val extras = host.intent.extras")
-        buildInject(builder, requireList, optionList)
-        return builder.build()
-    }
-
-    private fun buildFragInject(
-        className: String,
-        requireList: List<KSPropertyDeclaration>,
-        optionList: List<KSPropertyDeclaration>
-    ): FunSpec {
-        val fragClass = ClassName("", className)
-        val builder = FunSpec.builder("inject")
-        builder.addParameter("host", fragClass)
-            .addStatement("val extras = host.arguments")
         buildInject(builder, requireList, optionList)
         return builder.build()
     }
