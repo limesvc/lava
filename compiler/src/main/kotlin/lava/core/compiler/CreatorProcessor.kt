@@ -59,7 +59,8 @@ internal class CreatorProcessor : BaseProcessor() {
         requireList: List<KSPropertyDeclaration>,
         optionList: List<KSPropertyDeclaration>
     ): FunSpec {
-        val construct = FunSpec.builder(className)
+        val funName = className[0].toLowerCase().plus(className.substring(1, className.length))
+        val construct = FunSpec.builder(funName)
             .addAnnotation(
                 AnnotationSpec.builder(Source::class)
                     .addMember("%T::class", ClassName(packageName, className))
