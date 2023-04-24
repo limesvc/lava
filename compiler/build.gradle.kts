@@ -8,10 +8,10 @@ plugins {
 group = "lava.core"
 version = "1.0-SNAPSHOT"
 
-repositories {
-    mavenCentral()
-    google()
-}
+//repositories {
+//    mavenCentral()
+//    google()
+//}
 
 dependencies {
     implementation(kotlin("stdlib"))

@@ -1,5 +1,5 @@
 ext.versions += [
-        lifecycle: '1.4.2',
+        lifecycle: '1.7.0-RC',
 ]
 
 ext.deps += [
@@ -8,5 +8,6 @@ ext.deps += [
                         core   : "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.lifecycle",
                         android: "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.lifecycle"
                 ],
+                stdlib          : 'org.jetbrains.kotlin:kotlin-stdlib:1.8.20'
         ]
 ]

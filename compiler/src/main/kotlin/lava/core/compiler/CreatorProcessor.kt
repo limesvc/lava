@@ -1,6 +1,7 @@
 package lava.core.compiler
 
 import com.google.devtools.ksp.processing.Resolver
+import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
@@ -10,7 +11,7 @@ import com.squareup.kotlinpoet.*
 /**
  * Created by svc on 2021/4/13
  */
-internal class CreatorProcessor : BaseProcessor() {
+internal class CreatorProcessor(environment: SymbolProcessorEnvironment) : BaseProcessor(environment) {
     companion object {
         const val CREATOR_CLASS = "lava.core.compiler.Creator"
         const val PARAMS_CLASS = "lava.core.compiler.Var"
@@ -18,7 +19,6 @@ internal class CreatorProcessor : BaseProcessor() {
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver.getSymbolsWithAnnotation(CREATOR_CLASS)
-        val ret = symbols.filter { it.validate() }
         symbols
             .filterIsInstance<KSClassDeclaration>()
             .forEach { ksClass ->
@@ -51,7 +51,7 @@ internal class CreatorProcessor : BaseProcessor() {
 
                 export(fileSpec, ksClass.containingFile!!, packageName, builderName)
             }
-        return ret
+        return emptyList()
     }
 
     private fun buildConstructor(

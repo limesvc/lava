@@ -30,6 +30,21 @@ object UIUtil {
     fun dp(dp: Int): Int {
         return (dp * TARGET_DENSITY * fitRatio).toInt()
     }
+
+    fun screenHeight(): Int {
+        val dm: DisplayMetrics = appContext.resources.displayMetrics
+        return dm.heightPixels
+    }
+
+    fun screenWidth(): Int {
+        val dm: DisplayMetrics = appContext.resources.displayMetrics
+        return dm.widthPixels
+    }
+
+    fun screenSize(): IntArray {
+        val dm: DisplayMetrics = appContext.resources.displayMetrics
+        return intArrayOf(dm.widthPixels, dm.heightPixels)
+    }
 }
 
 fun Int.dp(): Int {

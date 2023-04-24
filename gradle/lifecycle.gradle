@@ -1,5 +1,5 @@
 ext.versions += [
-        lifecycle: '2.3.0',
+        lifecycle: '2.6.1',
 ]
 
 ext.deps += [

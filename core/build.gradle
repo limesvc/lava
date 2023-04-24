@@ -5,12 +5,14 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
+    namespace 'lava.core'
+
+    compileSdkVersion 33
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 30
+        minSdkVersion 17
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
 
@@ -25,11 +27,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
 
     sourceSets.main {
@@ -43,12 +45,12 @@ android {
 
 dependencies {
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation deps.kotlin.stdlib
 
-    implementation "com.google.code.gson:gson:2.8.6"
+    implementation "com.google.code.gson:gson:2.8.9"
 
-    //"https://github.com/forgetman/logger"
-    api 'com.github.forgetman:logger:2.0.1'
+    // https://mvnrepository.com/artifact/com.elvishew/xlog
+    implementation 'com.elvishew:xlog:1.11.0'
 
     api deps.androidx.multidex
 

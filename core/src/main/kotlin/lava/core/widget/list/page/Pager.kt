@@ -14,7 +14,7 @@ import lava.core.live.decorPlugin
 import lava.core.live.errorPlugin
 import lava.core.live.loadingPlugin
 import lava.core.net.LoadingState
-import logger.L
+import com.elvishew.xlog.XLog
 
 typealias DataBuilder = (page: Int, size: Int) -> Any?
 typealias SuspendDataBuilder = suspend (page: Int, size: Int) -> Any?
@@ -116,7 +116,7 @@ abstract class LivePagerX<DATA>(protected var page: Int, protected var size: Int
                 val input = dataRequest?.invoke(page, size) ?: asyncDataRequest?.invoke(page, size)
                 setup(input)
             }.onFailure {
-                L.e(it)
+                XLog.e(it)
                 updateState(LoadingState.ERROR)
             }.getOrNull()
         }

@@ -4,9 +4,11 @@ import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.SymbolProcessor
+import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSTypeReference
+import com.google.devtools.ksp.symbol.KSValueParameter
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 
@@ -14,7 +16,7 @@ import com.squareup.kotlinpoet.FileSpec
  * Created by svc on 2021/4/15
  * https://square.github.io/kotlinpoet/
  */
-internal abstract class BaseProcessor : SymbolProcessor {
+internal abstract class BaseProcessor(environment: SymbolProcessorEnvironment) : SymbolProcessor {
     protected lateinit var codeGenerator: CodeGenerator
     protected lateinit var logger: KSPLogger
 
@@ -32,18 +34,30 @@ internal abstract class BaseProcessor : SymbolProcessor {
         return ClassName(declaration.packageName.asString(), declaration.simpleName.asString())
     }
 
+    init {
+        this.codeGenerator = environment.codeGenerator
+        this.logger = environment.logger
 
-    override fun init(options: Map<String, String>, kotlinVersion: KotlinVersion, codeGenerator: CodeGenerator, logger: KSPLogger) {
-        this.codeGenerator = codeGenerator
-        this.logger = logger
+        log(environment.options.toString())
     }
 
     protected fun log(log: String) {
-        logger.warn(log)
+        logger.warn("233333333333 $log")
     }
 
     protected fun export(fileSpec: FileSpec, ksFile: KSFile, creatorPkg: String, builderName: String) {
-        val output = codeGenerator.createNewFile(Dependencies(true, ksFile), creatorPkg, builderName)
+        val output = codeGenerator.createNewFile(Dependencies(false, ksFile), creatorPkg, builderName)
         output.write(fileSpec.toString().toByteArray())
+        output.close()
+    }
+
+    protected fun export(fileSpec: FileSpec, creatorPkg: String, builderName: String) {
+        val output = codeGenerator.createNewFile(Dependencies( false), creatorPkg, builderName)
+        output.write(fileSpec.toString().toByteArray())
+        output.close()
+    }
+
+    protected fun KSValueParameter.name(): String {
+        return name?.asString() ?: ""
     }
 }

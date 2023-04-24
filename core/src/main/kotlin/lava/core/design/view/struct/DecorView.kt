@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.R as CR
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import lava.core.R
@@ -32,8 +33,8 @@ class DecorView: DecorStructX() {
         struct[TitleStruct]?.just {
             titleExist = true
             val constraint = LPUtil.constraint(height = 48.dp())
-            constraint.startToStart = R.id.parent
-            constraint.topToTop = R.id.parent
+            constraint.startToStart = CR.id.parent
+            constraint.topToTop = CR.id.parent
             val view = getView(context, host)
             view.id = R.id.struct_title
             decor.addView(view, constraint)
@@ -41,8 +42,8 @@ class DecorView: DecorStructX() {
 
         struct[ErrorStruct]?.just {
             val constraint = LPUtil.constraint()
-            constraint.startToStart = R.id.parent
-            constraint.topToTop = if (titleExist) R.id.struct_title else R.id.parent
+            constraint.startToStart = CR.id.parent
+            constraint.topToTop = if (titleExist) R.id.struct_title else CR.id.parent
             val view = getView(context, host)
             view.id = R.id.struct_error
             decor.addView(view, constraint)
@@ -51,16 +52,16 @@ class DecorView: DecorStructX() {
 
         val binding = host.binding()
         val contentConstraint = LPUtil.constraint()
-        contentConstraint.startToStart = R.id.parent
-        contentConstraint.topToTop = if (titleExist) R.id.struct_title else R.id.parent
+        contentConstraint.startToStart = CR.id.parent
+        contentConstraint.topToTop = if (titleExist) R.id.struct_title else CR.id.parent
         if (binding.root.id == View.NO_ID) binding.root.id = View.generateViewId()
         contentView = binding.root
         decor.addView(binding.root, contentConstraint)
 
         struct[LoadingStruct]?.just {
             val constraint = LPUtil.constraint()
-            constraint.startToStart = R.id.parent
-            constraint.topToTop = if (titleExist) R.id.struct_title else R.id.parent
+            constraint.startToStart = CR.id.parent
+            constraint.topToTop = if (titleExist) R.id.struct_title else CR.id.parent
             val view = getView(context, host)
             view.id = R.id.struct_loading
             decor.addView(view, constraint)

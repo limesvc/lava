@@ -1,6 +1,6 @@
 package lava.core.bus
 
-import logger.L
+import com.elvishew.xlog.XLog
 
 class Event private constructor(var flag: Int, var any: Any? = null) {
     companion object {
@@ -18,7 +18,7 @@ class Event private constructor(var flag: Int, var any: Any? = null) {
 //                poolSize--
 //                return event
 //            }
-            L.d("Event pool out of cache")
+            XLog.d("Event pool out of cache")
             return Event(flag, any)
         }
     }
