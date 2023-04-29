@@ -50,7 +50,7 @@ dependencies {
     implementation "com.google.code.gson:gson:2.8.9"
 
     // https://mvnrepository.com/artifact/com.elvishew/xlog
-    implementation 'com.elvishew:xlog:1.11.0'
+    api 'com.elvishew:xlog:1.11.0'
 
     api deps.androidx.multidex
 

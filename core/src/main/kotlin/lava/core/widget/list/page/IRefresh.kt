@@ -5,7 +5,7 @@ import lava.core.net.LoadingState
 import lava.core.type.Block
 
 /**
- * Created by wuxi on 2021/1/26
+ * Created by svc on 2021/1/26
  */
 interface ILoader {
     fun updateState(state: LoadingState)

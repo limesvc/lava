@@ -3,7 +3,7 @@ package lava.core.adopt
 import android.view.animation.Animation
 
 /**
- * Created by wuxi on 2021/6/24
+ * Created by svc on 2021/6/24
  */
 interface AnimationCallbacks : Animation.AnimationListener {
 

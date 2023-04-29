@@ -24,7 +24,7 @@ import lava.core.widget.image.transformation.CircleCrop
 import vector.network.image.glide.transformation.CornerTransform
 
 /**
- * Created by wuxi on 2021/1/26
+ * Created by svc on 2021/1/26
  */
 enum class ScaleType {
     CENTER_CROP,
