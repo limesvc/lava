@@ -1,6 +1,7 @@
 package lava.core.util
 
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -22,4 +23,8 @@ object LPUtil {
 
     fun constraint(width: Int = MATCH, height: Int = MATCH) =
         ConstraintLayout.LayoutParams(width, height)
+
+    fun window(width: Int = WindowManager.LayoutParams.WRAP_CONTENT, height: Int = WindowManager.LayoutParams.WRAP_CONTENT): WindowManager.LayoutParams {
+        return WindowManager.LayoutParams(width, height)
+    }
 }

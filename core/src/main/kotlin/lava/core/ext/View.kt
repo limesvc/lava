@@ -14,7 +14,7 @@ val View.inflater: LayoutInflater
 fun View?.singleClick(interval: Long = 500, block: (v: View) -> Unit) {
     this?.setOnClickListener {
         val lastTime = getTag(R.id.last_click_time) as? Long ?: 0L
-        if (lastTime - interval >= System.currentTimeMillis()) {
+        if (System.currentTimeMillis() - lastTime >= interval) {
             kotlin.runCatching {
                 block(this)
             }.onFailure {

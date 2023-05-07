@@ -1,5 +1,6 @@
 package lava.core.util
 
+import android.content.Context
 import android.util.DisplayMetrics
 import lava.core.appContext
 
@@ -44,6 +45,15 @@ object UIUtil {
     fun screenSize(): IntArray {
         val dm: DisplayMetrics = appContext.resources.displayMetrics
         return intArrayOf(dm.widthPixels, dm.heightPixels)
+    }
+
+    fun getStatusBarHeight(): Int {
+        var result = 0
+        val resourceId = appContext.resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            result = appContext.resources.getDimensionPixelSize(resourceId)
+        }
+        return result
     }
 }
 
