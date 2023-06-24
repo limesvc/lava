@@ -61,6 +61,10 @@ fun Int.dp(): Int {
     return UIUtil.dp(this)
 }
 
+val Int.dp: Int get() = UIUtil.dp(this)
+
 fun Float.dp(): Int {
     return UIUtil.dp(this)
 }
+
+val Float.dp: Int get() = UIUtil.dp(this)

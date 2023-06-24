@@ -21,7 +21,7 @@ class ErrorView: ErrorStructX() {
     private var layout: LinearLayout? = null
     private var layoutId: Int = 0
 
-    private val size = 36.dp()
+    private val size = 36.dp
 
     override fun getView(context: Context, host: StructHost): View {
         return layout ?: LinearLayout(context).apply {

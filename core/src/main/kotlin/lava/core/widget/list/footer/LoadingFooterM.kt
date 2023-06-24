@@ -21,7 +21,7 @@ class LoadingFooterM @JvmOverloads constructor(
     init {
         val progressDrawable = CircularProgressDrawable(context)
         imageView.setImageDrawable(progressDrawable)
-        addView(imageView, LPUtil.viewGroup(MATCH, 36.dp()))
+        addView(imageView, LPUtil.viewGroup(MATCH, 36.dp))
         textView.gravity = Gravity.CENTER
         textView.setTextColor(Color.BLACK)
 

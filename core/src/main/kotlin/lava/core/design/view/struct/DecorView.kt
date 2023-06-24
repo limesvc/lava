@@ -32,7 +32,7 @@ class DecorView: DecorStructX() {
         var titleExist = false
         struct[TitleStruct]?.just {
             titleExist = true
-            val constraint = LPUtil.constraint(height = 48.dp())
+            val constraint = LPUtil.constraint(height = 48.dp)
             constraint.startToStart = CR.id.parent
             constraint.topToTop = CR.id.parent
             val view = getView(context, host)

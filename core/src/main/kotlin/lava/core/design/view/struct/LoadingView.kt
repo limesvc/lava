@@ -23,7 +23,7 @@ class LoadingView : LoadingStructX() {
 
     private var layout: FrameLayout? = null
 
-    private val size = 36.dp()
+    private val size = 36.dp
 
     override fun getView(context: Context, host: StructHost): View {
         return layout ?: FrameLayout(context).apply {
